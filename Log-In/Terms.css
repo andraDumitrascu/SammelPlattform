@@ -2,8 +2,18 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
     margin: 50px;
-    background-color: #121212; 
-    color: white; 
+    background-color: #121212;
+    color: white;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.terms-container {
+    text-align: left;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 input, button {
@@ -28,11 +38,10 @@ button:hover {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background-color: #FF0000; 
+    background-color: #00FF00;
     animation: pulsieren 1s ease-in-out infinite;
     position: absolute;
-    box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
-    border: 2px solid #0000FF; 
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.8);
 }
 
 @keyframes pulsieren {
@@ -49,3 +58,4 @@ button:hover {
         opacity: 1;
     }
 }
+
