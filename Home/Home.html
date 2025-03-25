@@ -1,1 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
+    <link href="./SocialSolution.css" rel="stylesheet">
+</head>
+<body class="light-mode min-h-screen flex flex-col">
+    <div class="background-pattern"></div>
+    
 
+    <nav class="fixed top-0 w-full py-4 flex justify-center space-x-8 text-lg font-semibold backdrop-blur-md bg-white bg-opacity-10 shadow-lg">
+        <a href="index.html" class="hover:text-yellow-300 transition">Home</a>
+        <a href="#features" class="hover:text-yellow-300 transition">Features</a>
+        <a href="#portfolio" class="hover:text-yellow-300 transition">Portfolio</a>
+        <a href="#testimonials" class="hover:text-yellow-300 transition">Reviews</a>
+        <a href="contact.html" class="hover:text-yellow-300 transition">Kontakt</a>
+        <button onclick="toggleDarkMode()" class="ml-6 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 transition">🌙/☀️</button>
+    </nav>
+    
+ 
+    <section class="flex flex-col items-center text-center mt-32 px-6">
+        <h1 class="text-6xl shrikhand-font drop-shadow-lg">Social <span class="italic">Solutions</span></h1>
+        <p class="text-lg mt-4">Unser Motto: Mach ein Foto</p>
+        <button class="mt-6 bg-yellow-400 text-black text-lg font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-yellow-500 transition-transform transform hover:scale-110">Start</button>
+    </section>
+    
+  
+    <section id="features" class="mt-20 px-10 w-full max-w-5xl mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-6">Features</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="card"><img src="feature1.jpg" alt="Feature 1" class="w-full rounded"><p>Minimalistisches Design</p></div>
+            <div class="card"><img src="feature2.jpg" alt="Feature 2" class="w-full rounded"><p>Dynamische Animationen</p></div>
+            <div class="card"><img src="feature3.jpg" alt="Feature 3" class="w-full rounded"><p>Light/Dark Mode Toggle</p></div>
+        </div>
+    </section>
+    
+  
+    <section id="portfolio" class="mt-20 px-10 w-full max-w-5xl mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-6">Portfolio</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="card"><img src="project1.jpg" alt="Projekt 1" class="w-full rounded"><p>Projekt 1</p></div>
+            <div class="card"><img src="project2.jpg" alt="Projekt 2" class="w-full rounded"><p>Projekt 2</p></div>
+            <div class="card"><img src="project3.jpg" alt="Projekt 3" class="w-full rounded"><p>Projekt 3</p></div>
+        </div>
+    </section>
+    
+    
+    <section id="testimonials" class="mt-20 px-10 w-full max-w-5xl mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-6">User Reviews</h2>
+        <div class="card"><img src="user1.jpg" alt="User 1" class="w-16 h-16 rounded-full mx-auto mb-2">“Tolle Plattform! Sehr modern.”</div>
+    </section>
+    
+   
+    <footer class="mt-20 px-10 w-full max-w-5xl mx-auto text-center">
+        <p class="text-sm">© 2025 Social Solutions. All rights reserved.</p>
+    </footer>
+    <script src="./SocialSolution.js"></script>
+</body>
+</html>
