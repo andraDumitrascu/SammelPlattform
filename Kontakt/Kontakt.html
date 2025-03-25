@@ -3,19 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teilen in JavaScript</title>
+    <title>Kontakt - Social Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="Kontakt.css">
 </head>
-<body>
+<body class="light-mode min-h-screen flex flex-col">
+    <div class="background-pattern"></div>
+    
+    <nav class="fixed top-0 w-full py-4 flex justify-center space-x-8 text-lg font-semibold backdrop-blur-md bg-white bg-opacity-10 shadow-lg">
+        <a href="index.html" class="hover:text-yellow-300 transition">Home</a>
+        <a href="index.html#features" class="hover:text-yellow-300 transition">Features</a>
+        <a href="index.html#portfolio" class="hover:text-yellow-300 transition">Portfolio</a>
+        <a href="index.html#testimonials" class="hover:text-yellow-300 transition">Reviews</a>
+        <a href="contact.html" class="hover:text-yellow-300 transition">Kontakt</a>
+        <button onclick="toggleDarkMode()" class="ml-6 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 transition">🌙/☀️</button>
+    </nav>
+    
+    <section id="contact" class="mt-32 px-10 w-full max-w-5xl mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-6">Kontakt</h2>
+        <form class="card flex flex-col space-y-4">
+            <input type="text" placeholder="Name" class="p-3 rounded border text-black">
+            <input type="email" placeholder="Email" class="p-3 rounded border text-black">
+            <textarea placeholder="Nachricht" class="p-3 rounded border text-black"></textarea>
+            <button class="bg-yellow-400 text-black px-6 py-3 rounded hover:bg-yellow-500 transition">Senden</button>
+        </form>
+    </section>
 
-    <h2>Teile zwei Zahlen</h2>
-    <input type="number" id="zahl1" placeholder="Zahl 1">
-    <input type="number" id="zahl2" placeholder="Zahl 2">
-    <button id="teilenButton">Teilen</button>
-    <p id="ergebnis"></p>
-
-    <script src="Kontakt.js"></script>
-
+    <script src="Kontakt.js"></script> 
 </body>
 </html>
-
