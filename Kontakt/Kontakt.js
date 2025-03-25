@@ -15,5 +15,22 @@ document.getElementById("teilenButton").addEventListener("click", function() {
 
     const ergebnis = zahl1 / zahl2;
     ergebnisElement.textContent = `Ergebnis: ${ergebnis}`;
+
+    createAnimatedPoints();
 });
 
+function createAnimatedPoints() {
+    for (let i = 0; i < 5; i++) {
+        const point = document.createElement('div');
+        point.classList.add('animated-point');
+
+        point.style.top = `${Math.random() * window.innerHeight}px`;
+        point.style.left = `${Math.random() * window.innerWidth}px`;
+
+        document.body.appendChild(point);
+
+        setTimeout(() => {
+            point.remove();
+        }, 1000);  
+    }
+}
