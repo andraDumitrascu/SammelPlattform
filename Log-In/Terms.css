@@ -1,0 +1,51 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 50px;
+    background-color: #121212; 
+    color: white; 
+}
+
+input, button {
+    margin: 10px;
+    padding: 8px;
+    font-size: 16px;
+}
+
+button {
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.animated-point {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #FF0000; 
+    animation: pulsieren 1s ease-in-out infinite;
+    position: absolute;
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+    border: 2px solid #0000FF; 
+}
+
+@keyframes pulsieren {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(2);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
