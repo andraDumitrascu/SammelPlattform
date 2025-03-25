@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kontakt - Social Solutions</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="Kontakt.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="Kontakt.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
 </head>
 <body class="light-mode min-h-screen flex flex-col">
     <div class="background-pattern"></div>
@@ -15,21 +16,37 @@
         <a href="index.html" class="hover:text-yellow-300 transition">Home</a>
         <a href="index.html#features" class="hover:text-yellow-300 transition">Features</a>
         <a href="index.html#portfolio" class="hover:text-yellow-300 transition">Portfolio</a>
-        <a href="index.html#testimonials" class="hover:text-yellow-300 transition">Reviews</a>
+        <a href="index.html#testimonials" class="hover:text-yellow-300 transition">Rezension</a>
         <a href="contact.html" class="hover:text-yellow-300 transition">Kontakt</a>
         <button onclick="toggleDarkMode()" class="ml-6 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 transition">🌙/☀️</button>
     </nav>
-    
-    <section id="contact" class="mt-32 px-10 w-full max-w-5xl mx-auto text-center">
-        <h2 class="text-3xl font-bold mb-6">Kontakt</h2>
-        <form class="card flex flex-col space-y-4">
-            <input type="text" placeholder="Name" class="p-3 rounded border text-black">
-            <input type="email" placeholder="Email" class="p-3 rounded border text-black">
-            <textarea placeholder="Nachricht" class="p-3 rounded border text-black"></textarea>
-            <button class="bg-yellow-400 text-black px-6 py-3 rounded hover:bg-yellow-500 transition">Senden</button>
-        </form>
+
+    <section id="contact" class="contact-container">
+        <h2 class="contact-title">Kontakt</h2>
+        <div class="social-icons">
+           <a href="www.gmail.com"><img src="../Bilder/gmail.png" alt="Gmail"></a>
+           <a href="https://www.facebook.com/profile.php?id=61568176025248"><img src="../Bilder/Facebook.webp" alt="Facebook"></a>
+           <a href="https://www.instagram.com/kitutorai/"><img src="../Bilder/instagram.webp" alt="Instagram"></a>
+           <a href="https://www.youtube.com/channel/UCD3IvpwLz5NZqeX3Dkhj3Wg"><img src="../Bilder/youtube.png" alt="YouTube"></a>
+            
+        </div>
+        <div class="contact-info">
+            <p>Social Solutions (HTL Waidhofen/Ybbs)</p>
+            <p>Im Vogelsang 8,</p>
+            <p>3340 Waidhofen an der Ybbs</p>
+        </div>
+        <div class="team-section">
+            <h3>Mitwirkende:</h3>
+            
+            <p>Armin Fluch</p>
+            <p>Andra-Elena Dumitrascu</p>
+            <p>Nicole Kerschner</p>
+            <p>Roman Haider</p>
+        </div>
     </section>
 
-    <script src="Kontakt.js"></script> 
+    <footer class="footer">
+        <p>©2025 Social Solutions. Alle Rechte vorbehalten. <a href="#">Nutzungsbedingungen</a>.</p>
+    </footer>
 </body>
 </html>
