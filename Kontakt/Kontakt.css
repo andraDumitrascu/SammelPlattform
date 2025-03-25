@@ -21,3 +21,28 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+
+.animated-point {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #ff5733;
+    animation: pulsieren 1s ease-in-out infinite;
+    position: absolute;
+}
+
+@keyframes pulsieren {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
