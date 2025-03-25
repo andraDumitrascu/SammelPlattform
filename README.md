@@ -92,5 +92,5 @@ Bei Fragen zu den Nutzungsbedingungen kontaktiere uns unter: <muss noch festgele
 
 
 # Genauere Details unter:
-https://github.com/andraDumitrascu/SammelPlattform/
+https://www.canva.com/design/DAGivXNQS8Q/uW9flFVHPAYnVDucnJlNIQ/
 https://trello.com/b/VGpcwxyC/sammelplattform
