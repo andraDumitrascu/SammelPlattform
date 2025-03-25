@@ -18,7 +18,7 @@ Social Solutions ist eine Plattform zur effizienten Verwaltung von Fotos für sc
 
 - **Frontend**: HTML
 
-- **Auth & Sicherheit**: Django Authenticationn
+- **Auth & Sicherheit**: Django Authentication
 
 ## Installation
 Folge diesen Schritten, um das Projekt lokal einzurichten:
