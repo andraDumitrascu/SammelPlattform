@@ -3,31 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nutzungsbedingungen</title>
+    <title>Nutzungsbedingungen - Social Solutions</title>
+    <link rel="stylesheet" href="Kontakt.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="Terms.css">
 </head>
-<body>
+<body class="light-mode min-h-screen flex flex-col">
+    <div class="background-pattern"></div>
+    
+    <nav class="fixed top-0 w-full py-4 flex justify-center space-x-8 text-lg font-semibold backdrop-blur-md bg-white bg-opacity-10 shadow-lg">
+        <a href="index.html" class="hover:text-yellow-300 transition">Home</a>
+        <a href="index.html#features" class="hover:text-yellow-300 transition">Features</a>
+        <a href="index.html#portfolio" class="hover:text-yellow-300 transition">Portfolio</a>
+        <a href="index.html#testimonials" class="hover:text-yellow-300 transition">Rezension</a>
+        <a href="contact.html" class="hover:text-yellow-300 transition">Kontakt</a>
+        <button onclick="toggleDarkMode()" class="ml-6 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 transition">🌙/☀️</button>
+    </nav>
 
-    <h2>Nutzungsbedingungen</h2>
-    <div class="terms-container">
-        <p>Willkommen auf unserer Webseite! Bitte lesen Sie die folgenden Nutzungsbedingungen sorgfältig durch, bevor Sie unsere Dienste nutzen.</p>
+    <section class="contact-container">
+        <h2 class="contact-title">Nutzungsbedingungen</h2>
+        <div class="contact-info text-left">
+            <p>Diese Nutzungsbedingungen regeln die Nutzung der Website <strong>Social Solutions</strong> und aller damit verbundenen Dienste.</p>
+            
+            <h3 class="font-bold mt-4">1. Allgemeine Nutzung</h3>
+            <ul class="list-disc pl-6">
+                <li>Die Website darf nur im Einklang mit geltenden Gesetzen genutzt werden.</li>
+                <li>Das Verbreiten rechtswidriger oder beleidigender Inhalte ist untersagt.</li>
+                <li>Unbefugter Zugriff auf nicht-öffentliche Bereiche ist verboten.</li>
+            </ul>
+            
+            <h3 class="font-bold mt-4">2. Geistiges Eigentum</h3>
+            <ul class="list-disc pl-6">
+                <li>Alle Inhalte der Website sind urheberrechtlich geschützt.</li>
+                <li>Die Nutzung oder Vervielfältigung ohne Genehmigung ist nicht gestattet.</li>
+            </ul>
+            
+            <h3 class="font-bold mt-4">3. Haftungsausschluss</h3>
+            <ul class="list-disc pl-6">
+                <li>Die Nutzung der Website erfolgt auf eigenes Risiko.</li>
+                <li>Wir übernehmen keine Garantie für Richtigkeit und Verfügbarkeit.</li>
+                <li>Externe Links unterliegen nicht unserer Verantwortung.</li>
+            </ul>
+            
+            <h3 class="font-bold mt-4">4. Datenschutz</h3>
+            <ul class="list-disc pl-6">
+                <li>Personenbezogene Daten werden gemäß der Datenschutzrichtlinie verarbeitet.</li>
+                <li>Durch die Nutzung der Website stimmen Sie der Verarbeitung zu.</li>
+            </ul>
+            
+            <h3 class="font-bold mt-4">5. Änderungen der Nutzungsbedingungen</h3>
+            <ul class="list-disc pl-6">
+                <li>Diese Bedingungen können jederzeit geändert werden.</li>
+                <li>Die weitere Nutzung der Website gilt als Zustimmung zur Änderung.</li>
+            </ul>
+        </div>
+    </section>
 
-        <h3>1. Akzeptanz der Bedingungen</h3>
-        <p>Durch die Nutzung dieser Webseite erklären Sie sich mit den folgenden Nutzungsbedingungen einverstanden. Wenn Sie mit diesen Bedingungen nicht einverstanden sind, dürfen Sie unsere Webseite nicht verwenden.</p>
-
-        <h3>2. Änderungen der Bedingungen</h3>
-        <p>Wir behalten uns das Recht vor, diese Nutzungsbedingungen jederzeit zu ändern. Bitte überprüfen Sie regelmäßig diese Seite, um sicherzustellen, dass Sie mit den aktuellen Bedingungen einverstanden sind.</p>
-
-        <h3>3. Haftungsausschluss</h3>
-        <p>Wir übernehmen keine Haftung für die Nutzung der Inhalte unserer Webseite. Die Informationen auf dieser Webseite werden ohne Gewähr zur Verfügung gestellt.</p>
-
-        <h3>4. Datenschutz</h3>
-        <p>Der Schutz Ihrer persönlichen Daten ist uns wichtig. Weitere Informationen finden Sie in unserer Datenschutzerklärung.</p>
-
-        <h3>5. Kontakt</h3>
-        <p>Bei Fragen zu diesen Nutzungsbedingungen können Sie uns jederzeit kontaktieren.</p>
-    </div>
-
-    <script src="Terms.js"></script>
+    <footer class="footer">
+        <p>©2025 Social Solutions. Alle Rechte vorbehalten. <a href="#">Datenschutz</a>.</p>
+    </footer>
+    
+    <script defer src="Terms.js"></script>
 </body>
 </html>
