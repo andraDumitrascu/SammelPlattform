@@ -26,6 +26,7 @@ nav {
     margin-bottom: 20px;
     font-family: 'Shrikhand', cursive;
     color: white;
+    text-align: center; /* Ensures the title is centered */
 }
 
 .terms-content {
@@ -43,6 +44,12 @@ nav {
 .dark-mode .terms-content {
     background: rgba(0, 0, 0, 0.3);
     box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+}
+
+.footer {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
 }
 
 .footer a {
