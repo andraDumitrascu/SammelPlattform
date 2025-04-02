@@ -46,3 +46,7 @@
     0% { background-position: 0 0; }
     100% { background-position: 50px 50px; }
 }
+
+nav {
+    z-index: 1000; /* Höher als alle anderen Elemente */
+}
