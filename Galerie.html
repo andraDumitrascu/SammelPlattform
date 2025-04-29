@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontakt - Social Solutions</title>
+    <link rel="stylesheet" href="Galerie.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="Galerie.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
+</head>
+<body class="light-mode min-h-screen flex flex-col">
+    <div class="background-pattern"></div>
+    
+    <nav class="fixed top-0 w-full py-4 flex justify-center space-x-8 text-lg font-semibold backdrop-blur-md bg-white bg-opacity-10 shadow-lg">
+        <a href="index.html" class="hover:text-yellow-300 transition">Home</a>
+        <a href="index.html#features" class="hover:text-yellow-300 transition">Features</a>
+        <a href="index.html#portfolio" class="hover:text-yellow-300 transition">Portfolio</a>
+        <a href="index.html#testimonials" class="hover:text-yellow-300 transition">Rezension</a>
+        <a href="contact.html" class="hover:text-yellow-300 transition">Kontakt</a>
+        <button onclick="toggleDarkMode()" class="ml-6 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 transition">🌙/☀️</button>
+    </nav>
+
+    <section id="galerie" class="galerie-container">
+
+        <h2 class="galerie-title">Galerie <button onclick=Ordnerhinzufuegen() id="ordnerhinzufügen">+ Ordner hinzufügen</button></h2>
+        <div id="Ordner"></div>
+        
+
+
+    </section>
+
+    <footer class="footer">
+        <p>©2025 Social Solutions. Alle Rechte vorbehalten. <a href="../Log-In/Terms.html">Nutzungsbedingungen</a>.</p>
+    </footer>
+</body>
+</html>
