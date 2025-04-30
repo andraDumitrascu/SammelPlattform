@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -6,54 +7,58 @@
     <title>Social Solutions</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="Home.css">
-    <link rel="icon" href="../Bilder/SocialSolutionsLogo.png" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'Home.css' %}">
+    <link rel="icon" href="{% static 'Bilder/SocialSolutionsLogo.png' %}" type="image/x-icon">
 </head>
 <body class="light-mode min-h-screen flex flex-col">
     <div class="background-pattern"></div>
 
     <nav class="fixed top-0 w-full py-4 flex justify-center space-x-8 text-lg font-semibold backdrop-blur-md bg-white bg-opacity-10 shadow-lg">
-        <a href="Home.html" class="hover:text-yellow-300 transition">Home</a>
+        <a href="{% url 'home' %}" class="hover:text-yellow-300 transition">Home</a>
         <a href="#features" class="hover:text-yellow-300 transition">Features</a>
         <a href="#portfolio" class="hover:text-yellow-300 transition">Portfolio</a>
-        <a href="../Reviews/Reviews.html" class="hover:text-yellow-300 transition">Rezension</a>
-        <a href="../Kontakt/Kontakt.html" class="hover:text-yellow-300 transition">Kontakt</a>
+        <a href="{% url 'reviews' %}" class="hover:text-yellow-300 transition">Rezension</a>
+        <a href="{% url 'kontakt' %}" class="hover:text-yellow-300 transition">Kontakt</a>
         <button onclick="toggleDarkMode()" class="ml-6 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 transition">🌙/☀️</button>
     </nav>
 
     <section class="flex flex-col items-center text-center mt-32 px-6">
         <h1 class="text-6xl shrikhand-font drop-shadow-lg">Social <span class="italic">Solutions</span></h1>
         <p class="text-lg mt-4">Unser Motto: Mach ein Foto</p>
-        <a href="../LogIn/Log-In.html"><button class="mt-6 bg-yellow-400 text-black text-lg font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-yellow-500 transition-transform transform hover:scale-110">Start</button></a>
+        <a href="{% url 'login' %}">
+            <button class="mt-6 bg-yellow-400 text-black text-lg font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-yellow-500 transition-transform transform hover:scale-110">
+                Start
+            </button>
+        </a>
     </section>
 
     <section id="features" class="mt-20 px-10 w-full max-w-5xl mx-auto text-center">
         <h2 class="text-3xl font-bold mb-6">Features</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="card"><img src="../Bilder/Hands - Analytics.png" alt="Feature 1" class="h-40 rounded"><p>Minimalistisches Design</p></div>
-            <div class="card"><img src="../Bilder/Hands - Bomb.png" alt="Feature 2" class="h-40 rounded"><p>Dynamische Animationen</p></div>
-            <div class="card"><img src="../Bilder/Hands - Alarm.png" alt="Feature 3" class="h-40 rounded"><p>Light/Dark Mode Toggle</p></div>
+            <div class="card"><img src="{% static 'Bilder/Hands - Analytics.png' %}" alt="Feature 1" class="h-40 rounded"><p>Minimalistisches Design</p></div>
+            <div class="card"><img src="{% static 'Bilder/Hands - Bomb.png' %}" alt="Feature 2" class="h-40 rounded"><p>Dynamische Animationen</p></div>
+            <div class="card"><img src="{% static 'Bilder/Hands - Alarm.png' %}" alt="Feature 3" class="h-40 rounded"><p>Light/Dark Mode Toggle</p></div>
         </div>
     </section>
 
     <section id="portfolio" class="mt-20 px-10 w-full max-w-5xl mx-auto text-center">
         <h2 class="text-3xl font-bold mb-6">Portfolio</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="card"><img src="../Bilder/Hands - Contact.png" alt="Projekt 1" class="h-40 rounded"><p>Projekt 1</p></div>
-            <div class="card"><img src="../Bilder/Allura - Frontal Phone.png" alt="Projekt 2" class="h-40 rounded"><p>Projekt 2</p></div>
-            <div class="card"><img src="../Bilder/Hands - Folder.png" alt="Projekt 3" class="h-40 rounded"><p>Projekt 3</p></div>
+            <div class="card"><img src="{% static 'Bilder/Hands - Contact.png' %}" alt="Projekt 1" class="h-40 rounded"><p>Projekt 1</p></div>
+            <div class="card"><img src="{% static 'Bilder/Allura - Frontal Phone.png' %}" alt="Projekt 2" class="h-40 rounded"><p>Projekt 2</p></div>
+            <div class="card"><img src="{% static 'Bilder/Hands - Folder.png' %}" alt="Projekt 3" class="h-40 rounded"><p>Projekt 3</p></div>
         </div>
     </section>
 
     <section id="testimonials" class="mt-20 px-10 w-full max-w-5xl mx-auto text-center">
         <h2 class="text-3xl font-bold mb-6">User Reviews</h2>
-        <div class="card"><img src="../Bilder/Person.jpg" class="w-20 h-20 rounded-full mx-auto mb-2">“Tolle Plattform! Sehr modern.”</div>
+        <div class="card"><img src="{% static 'Bilder/Person.jpg' %}" class="w-20 h-20 rounded-full mx-auto mb-2">“Tolle Plattform! Sehr modern.”</div>
     </section>
 
     <footer class="mt-20 px-10 w-full max-w-5xl mx-auto text-center">
-        <p>©2025 Social Solutions. Alle Rechte vorbehalten. <a href="../Nutzungsbedingungen/terms.html">Nutzungsbedingungen</a>.</p>
+        <p>©2025 Social Solutions. Alle Rechte vorbehalten. <a href="{% url 'terms' %}">Nutzungsbedingungen</a>.</p>
     </footer>
 
-    <script src="Home.js"></script> 
+    <script src="{% static 'Home.js' %}"></script>
 </body>
 </html>
