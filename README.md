@@ -14,7 +14,7 @@ Social Solutions ist eine Plattform zur effizienten Verwaltung von Fotos für sc
 ## Technologie-Stack
 - **Backend**: Django
 
-- **Datenbank**: PostgreSQL
+- **Datenbank**: MySQL
 
 - **Frontend**: HTML
 
