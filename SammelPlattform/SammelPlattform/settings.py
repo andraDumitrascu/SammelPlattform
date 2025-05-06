@@ -78,10 +78,10 @@ WSGI_APPLICATION = 'SammelPlattform.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', #muss geändert werden
-        'NAME': 'myproject', #muss geändert werden
-        'USER': 'myuser', #das auch
-        'PASSWORD': 'mypassword', #das auch
+        'ENGINE': 'django.db.backends.mysql', 
+        'NAME': 'Sammelplattform1', 
+        'USER': 'admin', 
+        'PASSWORD': 'Schule7', 
         'HOST': 'localhost',  
         'PORT': '3306',
     }
