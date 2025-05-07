@@ -20,4 +20,10 @@ def reviews(request):
 
 def galerie(request):
     return render(request, 'Galerie.html')
+
+def rezensionen_anzeigen(request):
+    # Alle Bewertungen aus der Datenbank holen
+    bewertungen = Bewertung.objects.all()  # Alle Bewertungen abfragen
     
+    # Daten an das Template übergeben
+    return render(request, 'Reviews.html', {'Rezension': bewertungen})    
