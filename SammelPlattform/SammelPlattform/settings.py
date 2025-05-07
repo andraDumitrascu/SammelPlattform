@@ -80,9 +80,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', #muss geändert werden
         'NAME': 'sammelplattform', #muss geändert werden
-        'USER': 'admin', #das auch
-        'PASSWORD': 'Schule7', #das auch
-        'HOST': 'localhost',  
+        'USER': 'youruser', #das auch
+        'PASSWORD': 'yourpassword', #das auch
+        'HOST': '10.113.0.240',  
         'PORT': '3306',
     }
 }
