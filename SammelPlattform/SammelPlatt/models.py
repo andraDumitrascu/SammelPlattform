@@ -17,7 +17,6 @@ class Bewertung(models.Model):
     fotoid = models.ForeignKey('Foto', models.DO_NOTHING, db_column='FotoID')  # Field name made lowercase.
 
     class Meta:
-        managed = False
         db_table = 'bewertung'
 
 
@@ -31,7 +30,6 @@ class Foto(models.Model):
     foto = models.TextField(db_column='Foto')  # Field name made lowercase.
 
     class Meta:
-        managed = False
         db_table = 'foto'
 
 
@@ -40,7 +38,6 @@ class Kategorie(models.Model):
     name = models.CharField(db_column='Name', unique=True, max_length=45)  # Field name made lowercase.
 
     class Meta:
-        managed = False
         db_table = 'kategorie'
 
 
@@ -52,7 +49,6 @@ class Nutzer(models.Model):
     nutzerid = models.AutoField(db_column='NutzerID', primary_key=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
         db_table = 'nutzer'
 
 
@@ -63,5 +59,4 @@ class Ordner(models.Model):
     inordner = models.ForeignKey('self', models.DO_NOTHING, db_column='inOrdner', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
         db_table = 'ordner'
