@@ -27,7 +27,18 @@
             Rezension 
             <button onclick="Rezesionhinzufuegen()" id="rezensionhinzufuegen">+ Rezension erstellen</button>
         </h2>
-        <div id="rezension"></div>
+        <div id="rezension">
+            {% for rezension in bewertungen %}
+                <div class="review-box">
+                    <h3>{{ rezension.titel }}</h3>
+                    <p>Sterne: {{ rezension.sternezahl }}</p>
+                    <p>{{ rezension.beschreibung }}</p>
+                </div>
+            {% empty %}
+                <p>Es gibt noch keine Rezensionen.</p>
+            {% endfor %}
+        </div>
+        
     </section>
 
     <footer class="footer">
