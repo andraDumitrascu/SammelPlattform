@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.urls import path
 from SammelPlatt import views
+from django.urls import path, include
+
 
 urlpatterns = [
     path('', views.home, name='home'),
