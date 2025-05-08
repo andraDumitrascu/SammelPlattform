@@ -24,7 +24,8 @@
 
     <section id="login" class="login-container">
         <h1 class="login-title">Login</h1>
-        <form class="login-form">
+        <form class="login-form" method="POST" action="{% url 'benutzer_login' %}">
+            {% csrf_token %}
             <label for="email">E-Mail:</label>
             <input type="email" id="email" placeholder="Vorname.Nachname@htlwy.at" required>
             
