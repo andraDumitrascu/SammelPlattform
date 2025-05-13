@@ -22,7 +22,7 @@ function Ordnerhinzufuegen() {
     neuerOrdner.appendChild(nameInput);
     
     const bild = document.createElement('img');
-    bild.src = 'Ordner.png'; 
+    bild.src = "{% static 'Bilder/gmail.png' %}"; 
     bild.alt = 'Ordnerbild'; 
     bild.className = 'ordner-bild'; 
     bild.style.width = '200px';
