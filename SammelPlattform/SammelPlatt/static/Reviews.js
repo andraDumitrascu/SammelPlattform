@@ -17,26 +17,50 @@ function Rezesionhinzufuegen() {
     eingabeFeld.type = 'text';
     eingabeFeld.placeholder = 'Gib deine Rezension ein...';
     eingabeFeld.className = 'eingabe-feld'; 
-
+    
     const hinzufuegenButton = document.createElement('button');
     hinzufuegenButton.textContent = 'Hinzufügen';
     hinzufuegenButton.className = 'hinzufuegen-button'; 
-    hinzufuegenButton.onclick = function() {
+    hinzufuegenButton.onclick = async function() {
         const rezensionText = eingabeFeld.value;
         if (rezensionText) {
-            const neuerOrdner = document.createElement('div');
-            neuerOrdner.className = 'rezension-text'; 
+            // ➤ Neue Rezension an Django senden
+            try {
+                const response = await fetch("/rezension-erstellen/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        titel: "Neue Rezension",
+                        text: rezensionText,
+                        sterne: 5
+                        nutzerid: nutzerid
+                    })
+                });
 
-            const text = document.createElement('p');
-            text.textContent = rezensionText;
-            neuerOrdner.appendChild(text);
+                if (!response.ok) throw new Error("Fehler beim Senden");
 
-            const ordnerContainer = document.getElementById('rezension');
-            ordnerContainer.appendChild(neuerOrdner);
+                const data = await response.json();
 
-            eingabeFeld.value = '';
+                // ➤ Ausgabe im DOM aktualisieren
+                const neuerOrdner = document.createElement('div');
+                neuerOrdner.className = 'rezension-text';
 
-            eingabeContainer.style.display = 'none';
+                const text = document.createElement('p');
+                text.textContent = data.beschreibung;
+                neuerOrdner.appendChild(text);
+
+                document.getElementById('rezension').appendChild(neuerOrdner);
+
+                eingabeFeld.value = '';
+                eingabeContainer.style.display = 'none';
+
+            } catch (error) {
+                alert("Fehler beim Speichern der Rezension");
+                console.error(error);
+            }
+
         } else {
             alert('Bitte gib eine Rezension ein.');
         }
@@ -44,7 +68,5 @@ function Rezesionhinzufuegen() {
 
     eingabeContainer.appendChild(eingabeFeld);
     eingabeContainer.appendChild(hinzufuegenButton);
-
-    const ordnerContainer = document.getElementById('rezension');
-    ordnerContainer.appendChild(eingabeContainer);
+    document.getElementById('rezension').appendChild(eingabeContainer);
 }
