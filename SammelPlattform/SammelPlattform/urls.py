@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.urls import path
 from SammelPlatt import views
+from django.contrib import admin
 from django.urls import path, include
 
 
@@ -28,5 +29,6 @@ urlpatterns = [
     path('reviews/', views.reviews, name='reviews'),
     path('galerie/', views.galerie, name='galerie'),
     path('', include('SammelPlatt.urls')),
+    path('admin/', admin.site.urls),
 
 ]

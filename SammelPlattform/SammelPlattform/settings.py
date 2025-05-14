@@ -126,7 +126,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # This is where static file
 
 # Define the directory where static files are stored
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),  # or wherever your static files are located
+    os.path.join(BASE_DIR,'SammelPlatt', 'static'),  # or wherever your static files are located
 ]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
