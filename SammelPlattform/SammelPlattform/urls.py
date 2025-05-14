@@ -27,6 +27,7 @@ urlpatterns = [
     path('datenschutz/', views.datenschutz, name='datenschutz'),
     path('terms/', views.terms, name='terms'),
     path('reviews/', views.reviews, name='reviews'),
+    path('galerie/', views.galerie, name='galerie'),
     path('', include('SammelPlatt.urls')),
     path('admin/', admin.site.urls),
 
