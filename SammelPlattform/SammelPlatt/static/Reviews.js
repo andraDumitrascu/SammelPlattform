@@ -35,7 +35,7 @@ function Rezesionhinzufuegen() {
                         titel: "Neue Rezension",
                         text: rezensionText,
                         sterne: 5
-                        nutzerid: nutzerid
+                        //nutzerid: nutzerid //Fehler!
                     })
                 });
 
