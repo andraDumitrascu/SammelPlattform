@@ -25,9 +25,9 @@ document.getElementById('login-form').addEventListener('submit', async function(
 
     if (response.ok) {
         alert('Login erfolgreich!');
-        window.location.href = '/home/';
+        window.location.href = '/';
     } else {
         alert('Login fehlgeschlagen');
-        window.location.href = '/home/';
+        window.location.href = '/login/';
     }
 });
