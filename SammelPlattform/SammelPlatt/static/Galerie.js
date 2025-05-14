@@ -33,7 +33,7 @@ function Ordnerhinzufuegen() {
     neuerOrdner.appendChild(nameInput);
     
     const bild = document.createElement('img');
-    bild.src = "{% static 'Bilder/Ordner.png' %}"; 
+    bild.src = ORDNER_BILD_URL;
     bild.alt = 'Ordnerbild'; 
     bild.className = 'ordner-bild'; 
     bild.style.width = '200px';
