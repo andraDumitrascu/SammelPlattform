@@ -75,17 +75,17 @@ TEMPLATES = [
  
 WSGI_APPLICATION = 'SammelPlattform.wsgi.application'
  
-# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'sammelplattform',
-        'USER': 'root',
-        'PASSWORD': 'socialsolulu4&gg15',
-        'HOST': '127.0.0.1',
+        'USER': 'django_user',
+        'PASSWORD': 'dein_starkes_passwort',
+        'HOST': '10.113.0.240',
         'PORT': '3306',
     }
 }
+
  
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
