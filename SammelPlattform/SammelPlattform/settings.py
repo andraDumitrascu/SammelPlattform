@@ -10,27 +10,31 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
-
 from pathlib import Path
-
+ 
+# LDAP Imports & dotenv
+from dotenv import load_dotenv
+import ldap
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType, LDAPGroupQuery
+ 
+# Load .env variables
+load_dotenv()
+ 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
+ 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
+ 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-bq0c2t=2=2tcm8av!3qze!i%vnnv_*v@33((1@=$ofu$a7k!+1'
-
+ 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+ 
 ALLOWED_HOSTS = ['*']
-
-
+ 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,10 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'SammelPlatt',  
+    'SammelPlatt',
 ]
-
-
+ 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -51,9 +54,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+ 
 ROOT_URLCONF = 'SammelPlattform.urls'
-
+ 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -69,28 +72,22 @@ TEMPLATES = [
         },
     },
 ]
-
+ 
 WSGI_APPLICATION = 'SammelPlattform.wsgi.application'
-
-
+ 
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', #muss geändert werden
-        'NAME': 'sammelplattform', #muss geändert werden
-        'USER': 'youruser', #das auch
-        'PASSWORD': 'yourpassword', #das auch
-        'HOST': '10.113.0.240',  
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'sammelplattform',
+        'USER': 'root',
+        'PASSWORD': 'yourpassword',
+        'HOST': '10.113.0.240',
         'PORT': '3306',
     }
 }
-
-
+ 
 # Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -105,30 +102,67 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-
+ 
 # Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
-
-
+ 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # This is where static files will be collected
-
-# Define the directory where static files are stored
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+ 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,'SammelPlatt', 'static'),  # or wherever your static files are located
+    os.path.join(BASE_DIR, 'static'),
 ]
+ 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+ 
+# ===========================
+# LDAP AUTHENTICATION CONFIG
+# ===========================
+ 
+AUTH_LDAP_GLOBAL_OPTIONS = {
+    ldap.OPT_X_TLS_REQUIRE_CERT: ldap.OPT_X_TLS_NEVER,
+    ldap.OPT_DEBUG_LEVEL: 255
+}
+ 
+AUTH_LDAP_SERVER_URI = os.getenv('LDAP_HOST')
+AUTH_LDAP_BIND_DN = os.getenv('LDAP_BIND_DN')
+AUTH_LDAP_BIND_PASSWORD = os.getenv('LDAP_BIND_PASSWORD')
+ 
+AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    os.getenv('LDAP_USER_SEARCH'),
+    ldap.SCOPE_SUBTREE,
+    "(uid=%(user)s)"
+)
+ 
+AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
+    os.getenv('LDAP_GROUP_SEARCH'),
+    ldap.SCOPE_SUBTREE,
+    "(objectClass=groupOfNames)"
+)
+ 
+AUTH_LDAP_GROUP_TYPE = GroupOfNamesType(name_attr="cn")
+ 
+AUTH_LDAP_USER_FLAGS_BY_GROUP = {
+    "is_superuser": os.getenv('LDAP_SUPERUSER_FLAGS'),
+}
+ 
+AUTH_LDAP_FIND_GROUP_PERMS = True
+ 
+AUTH_LDAP_USER_ATTR_MAP = {
+    "first_name": os.getenv('LDAP_USER_ATTR_FN'),
+    "last_name": os.getenv('LDAP_USER_ATTR_LN'),
+    "email": os.getenv('LDAP_USER_ATTR_EMAIL'),
+    "ldrole": os.getenv('LDAP_USER_ATTR_LDROLE'),
+}
+ 
+AUTH_LDAP_ALWAYS_UPDATE_USER = True
+ 
+AUTHENTICATION_BACKENDS = [
+    "django_auth_ldap.backend.LDAPBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
