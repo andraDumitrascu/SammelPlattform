@@ -82,7 +82,7 @@ DATABASES = {
         'NAME': 'sammelplattform',
         'USER': 'root',
         'PASSWORD': 'socialsolulu4&gg15',
-        'HOST': '10.113.0.240',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
     }
 }

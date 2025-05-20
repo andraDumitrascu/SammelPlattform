@@ -52,11 +52,24 @@ class Nutzer(models.Model):
         db_table = 'nutzer'
 
 
+from django.utils.text import slugify
+
 class Ordner(models.Model):
-    ordid = models.AutoField(db_column='OrdID', primary_key=True)  # Field name made lowercase.
+    ordid = models.AutoField(db_column='OrdID', primary_key=True)
     titel = models.CharField(unique=True, max_length=45)
     pfad = models.CharField(max_length=45)
-    inordner = models.ForeignKey('self', models.DO_NOTHING, db_column='inOrdner', blank=True, null=True)  # Field name made lowercase.
+    inordner = models.ForeignKey('self', models.DO_NOTHING, db_column='inOrdner', blank=True, null=True)
+
+    slug = models.SlugField(unique=True, max_length=60, blank=True)
 
     class Meta:
         db_table = 'ordner'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.titel)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.titel
+

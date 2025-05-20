@@ -19,7 +19,12 @@ def reviews(request):
     return render(request, 'Reviews.html')
 
 def galerie(request):
-    return render(request, 'Galerie.html')
+    ordner = Ordner.objects.all()
+    return render(request, 'Galerie.html', {'ordner': ordner})
+
+def ordner_detail(request, slug):
+    ordner = get_object_or_404(Ordner, slug=slug)
+    return render(request, 'ordner_detail.html', {'ordner': ordner})
 
 # views.py
 def rezensionen_anzeigen(request):
@@ -75,3 +80,25 @@ def rezension_erstellen(request):
     except Exception as e:
         print("Fehler beim Parsen/Speichern:", e)
         return HttpResponseBadRequest(f"Fehler: {e}")
+
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from .models import Ordner
+from django.utils.text import slugify
+
+@csrf_exempt
+def ordner_erstellen(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        titel = data.get('name')
+        if not titel:
+            return JsonResponse({'success': False, 'error': 'Kein Name angegeben'})
+
+        slug = slugify(titel)
+        if Ordner.objects.filter(slug=slug).exists():
+            return JsonResponse({'success': False, 'error': 'Ordner existiert bereits'})
+
+        ordner = Ordner.objects.create(titel=titel, pfad='/', slug=slug)
+        return JsonResponse({'success': True, 'slug': ordner.slug})
+    
+    return JsonResponse({'success': False, 'error': 'Ungültige Methode'})
