@@ -81,7 +81,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'sammelplattform',
         'USER': 'root',
-        'PASSWORD': 'yourpassword',
+        'PASSWORD': 'socialsolulu4&gg15',
         'HOST': '10.113.0.240',
         'PORT': '3306',
     }
@@ -166,3 +166,22 @@ AUTHENTICATION_BACKENDS = [
     "django_auth_ldap.backend.LDAPBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
+
+AUTH_LDAP_GLOBAL_OPTIONS = {
+    ldap.OPT_X_TLS_REQUIRE_CERT: ldap.OPT_X_TLS_NEVER,
+    ldap.OPT_DEBUG_LEVEL: 255
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {'class': 'logging.StreamHandler'},
+    },
+    'loggers': {
+        'django_auth_ldap': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+    },
+}
