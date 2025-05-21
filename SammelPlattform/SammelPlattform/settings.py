@@ -12,13 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
  
-# LDAP Imports & dotenv
-from dotenv import load_dotenv
-import ldap
-from django_auth_ldap.config import LDAPSearch, GroupOfNamesType, LDAPGroupQuery
- 
-# Load .env variables
-load_dotenv()
  
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -114,7 +107,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
  
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, "SammelPlatt", "static")
 ]
  
 # Default primary key field type
@@ -124,54 +117,57 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # LDAP AUTHENTICATION CONFIG
 # ===========================
  
+from dotenv import load_dotenv
+
+import ldap
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType, LDAPGroupQuery
+
+# Load environment variables
+load_dotenv()
+
 AUTH_LDAP_GLOBAL_OPTIONS = {
-    ldap.OPT_X_TLS_REQUIRE_CERT: ldap.OPT_X_TLS_NEVER,
-    ldap.OPT_DEBUG_LEVEL: 255
+    ldap.OPT_X_TLS_REQUIRE_CERT: ldap.OPT_X_TLS_NEVER,  # Zertifikate ignorieren (nicht für Prod empfohlen!)
+    ldap.OPT_DEBUG_LEVEL: 255  # Ausführliches Debugging
 }
- 
+
 AUTH_LDAP_SERVER_URI = os.getenv('LDAP_HOST')
 AUTH_LDAP_BIND_DN = os.getenv('LDAP_BIND_DN')
 AUTH_LDAP_BIND_PASSWORD = os.getenv('LDAP_BIND_PASSWORD')
- 
+
 AUTH_LDAP_USER_SEARCH = LDAPSearch(
     os.getenv('LDAP_USER_SEARCH'),
     ldap.SCOPE_SUBTREE,
     "(uid=%(user)s)"
 )
- 
+
 AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
     os.getenv('LDAP_GROUP_SEARCH'),
     ldap.SCOPE_SUBTREE,
     "(objectClass=groupOfNames)"
 )
- 
+
 AUTH_LDAP_GROUP_TYPE = GroupOfNamesType(name_attr="cn")
- 
+
 AUTH_LDAP_USER_FLAGS_BY_GROUP = {
     "is_superuser": os.getenv('LDAP_SUPERUSER_FLAGS'),
 }
- 
+
 AUTH_LDAP_FIND_GROUP_PERMS = True
- 
+AUTH_LDAP_ALWAYS_UPDATE_USER = True
+
 AUTH_LDAP_USER_ATTR_MAP = {
     "first_name": os.getenv('LDAP_USER_ATTR_FN'),
     "last_name": os.getenv('LDAP_USER_ATTR_LN'),
     "email": os.getenv('LDAP_USER_ATTR_EMAIL'),
     "ldrole": os.getenv('LDAP_USER_ATTR_LDROLE'),
 }
- 
-AUTH_LDAP_ALWAYS_UPDATE_USER = True
- 
+
 AUTHENTICATION_BACKENDS = [
     "django_auth_ldap.backend.LDAPBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-AUTH_LDAP_GLOBAL_OPTIONS = {
-    ldap.OPT_X_TLS_REQUIRE_CERT: ldap.OPT_X_TLS_NEVER,
-    ldap.OPT_DEBUG_LEVEL: 255
-}
-
+# Optionales Logging zur Diagnose
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -185,3 +181,4 @@ LOGGING = {
         },
     },
 }
+
