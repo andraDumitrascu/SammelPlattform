@@ -77,12 +77,12 @@ WSGI_APPLICATION = 'SammelPlattform.wsgi.application'
  
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sammelplattform',
-        'USER': 'django_user',
-        'PASSWORD': 'dein_starkes_passwort',
-        'HOST': '10.113.0.240',
-        'PORT': '3306',
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': 'sammelplattform',
+       'USER': 'django_user',
+       'PASSWORD': 'dein_starkes_passwort',
+       'HOST': '10.112.0.242',
+       'PORT': '3306',
     }
 }
 
@@ -103,6 +103,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
  
+#Login
+AUTH_USER_MODEL = 'SammelPlatt.Nutzer'
+
+
+
 # Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
@@ -114,7 +119,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
  
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'SammelPlatt', 'static'),
 ]
  
 # Default primary key field type
@@ -163,13 +168,46 @@ AUTH_LDAP_USER_ATTR_MAP = {
 AUTH_LDAP_ALWAYS_UPDATE_USER = True
  
 AUTHENTICATION_BACKENDS = [
-    "django_auth_ldap.backend.LDAPBackend",
+    
+    "SammelPlatt.backends.EmailAuthBackend",
+    #"django_auth_ldap.backend.LDAPBackend",
     "django.contrib.auth.backends.ModelBackend",
+
+
 ]
 
 AUTH_LDAP_GLOBAL_OPTIONS = {
     ldap.OPT_X_TLS_REQUIRE_CERT: ldap.OPT_X_TLS_NEVER,
     ldap.OPT_DEBUG_LEVEL: 255
+}# No selected code was provided, so I will suggest an improvement to the existing code.
+
+# Add a try-except block to handle potential errors when loading environment variables
+try:
+    load_dotenv()
+except Exception as e:
+    print(f"Error loading environment variables: {e}")
+
+# Improve the logging configuration to include more detailed information
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django_auth_ldap': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+    },
 }
 
 LOGGING = {

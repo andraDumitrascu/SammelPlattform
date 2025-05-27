@@ -1,65 +1,101 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django.utils.text import slugify
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
+# -----------------------------
+# Custom Nutzer Manager
+# -----------------------------
+class NutzerManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('Email required')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)  # hashed password wird in 'Passwort' gespeichert
+        user.save(using=self._db)
+        return user
+
+
+# -----------------------------
+# Custom Nutzer Model
+# -----------------------------
+class Nutzer(AbstractBaseUser):
+    nutzerid = models.AutoField(db_column='NutzerID', primary_key=True)
+    email = models.EmailField(db_column='Email', unique=True, max_length=30)
+    password = models.CharField(db_column='Passwort', max_length=128)
+
+    last_login = None  # entfernt das Feld aus AbstractBaseUser
+
+    eingeloggt = models.BooleanField(db_column='Eingeloggt', default=False)
+    gesperrt = models.BooleanField(db_column='Gesperrt', default=False)
+
+    @property
+    def is_active(self):
+        return not self.gesperrt
+
+    @is_active.setter
+    def is_active(self, value):
+        self.gesperrt = not value
+
+    objects = NutzerManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    class Meta:
+        db_table = 'nutzer'
+
+# -----------------------------
+# Bewertung
+# -----------------------------
 class Bewertung(models.Model):
-    sternezahl = models.IntegerField(db_column='sterneZahl')  # Field name made lowercase.
-    bewertungid = models.AutoField(db_column='BewertungID', primary_key=True)  # Field name made lowercase.
-    titel = models.CharField(db_column='Titel', max_length=25)  # Field name made lowercase.
-    beschreibung = models.CharField(db_column='Beschreibung', max_length=60, blank=True, null=True)  # Field name made lowercase.
-    nutzerid = models.ForeignKey('Nutzer', models.DO_NOTHING, db_column='NutzerID')  # Field name made lowercase.
-    fotoid = models.ForeignKey('Foto', models.DO_NOTHING, db_column='FotoID')  # Field name made lowercase.
+    sternezahl = models.IntegerField(db_column='sterneZahl')
+    bewertungid = models.AutoField(db_column='BewertungID', primary_key=True)
+    titel = models.CharField(db_column='Titel', max_length=25)
+    beschreibung = models.CharField(db_column='Beschreibung', max_length=60, blank=True, null=True)
+    nutzerid = models.ForeignKey('Nutzer', models.DO_NOTHING, db_column='NutzerID')
+    fotoid = models.ForeignKey('Foto', models.DO_NOTHING, db_column='FotoID')
 
     class Meta:
         db_table = 'bewertung'
 
 
+# -----------------------------
+# Foto
+# -----------------------------
 class Foto(models.Model):
-    beschreibung = models.CharField(db_column='Beschreibung', max_length=60, blank=True, null=True)  # Field name made lowercase.
-    kategorieid = models.ForeignKey('Kategorie', models.DO_NOTHING, db_column='KategorieID')  # Field name made lowercase.
-    fotoid = models.AutoField(db_column='FotoID', primary_key=True)  # Field name made lowercase.
-    hochladedatum = models.DateField(db_column='HochladeDatum', blank=True, null=True)  # Field name made lowercase.
-    gesamtbewertung = models.FloatField(db_column='Gesamtbewertung')  # Field name made lowercase.
-    ordid = models.ForeignKey('Ordner', models.DO_NOTHING, db_column='OrdID')  # Field name made lowercase.
-    foto = models.TextField(db_column='Foto')  # Field name made lowercase.
+    beschreibung = models.CharField(db_column='Beschreibung', max_length=60, blank=True, null=True)
+    kategorieid = models.ForeignKey('Kategorie', models.DO_NOTHING, db_column='KategorieID')
+    fotoid = models.AutoField(db_column='FotoID', primary_key=True)
+    hochladedatum = models.DateField(db_column='HochladeDatum', blank=True, null=True)
+    gesamtbewertung = models.FloatField(db_column='Gesamtbewertung')
+    ordid = models.ForeignKey('Ordner', models.DO_NOTHING, db_column='OrdID')
+    foto = models.TextField(db_column='Foto')
 
     class Meta:
         db_table = 'foto'
 
 
+# -----------------------------
+# Kategorie
+# -----------------------------
 class Kategorie(models.Model):
-    kategorieid = models.AutoField(db_column='KategorieID', primary_key=True)  # Field name made lowercase.
-    name = models.CharField(db_column='Name', unique=True, max_length=45)  # Field name made lowercase.
+    kategorieid = models.AutoField(db_column='KategorieID', primary_key=True)
+    name = models.CharField(db_column='Name', unique=True, max_length=45)
 
     class Meta:
         db_table = 'kategorie'
 
 
-class Nutzer(models.Model):
-    email = models.CharField(db_column='Email', unique=True, max_length=30)  # Field name made lowercase.
-    passwort = models.CharField(db_column='Passwort', max_length=45)  # Field name made lowercase.
-    eingeloggt = models.IntegerField(db_column='Eingeloggt')  # Field name made lowercase.
-    gesperrt = models.IntegerField(db_column='Gesperrt')  # Field name made lowercase.
-    nutzerid = models.AutoField(db_column='NutzerID', primary_key=True)  # Field name made lowercase.
-
-    class Meta:
-        db_table = 'nutzer'
-
-
-from django.utils.text import slugify
-
+# -----------------------------
+# Ordner
+# -----------------------------
 class Ordner(models.Model):
     ordid = models.AutoField(db_column='OrdID', primary_key=True)
     titel = models.CharField(unique=True, max_length=45)
     pfad = models.CharField(max_length=45)
     inordner = models.ForeignKey('self', models.DO_NOTHING, db_column='inOrdner', blank=True, null=True)
-
     slug = models.SlugField(unique=True, max_length=60, blank=True)
 
     class Meta:
@@ -72,4 +108,3 @@ class Ordner(models.Model):
 
     def __str__(self):
         return self.titel
-

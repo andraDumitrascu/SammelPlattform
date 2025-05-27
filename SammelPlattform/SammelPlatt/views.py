@@ -1,13 +1,42 @@
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from .models import Bewertung, Nutzer, Ordner
+from django.http import JsonResponse, HttpResponseBadRequest
+from django.utils.text import slugify
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
+from django.http import JsonResponse
+
 
 def home(request):
     return render(request, 'Home.html')
 
 def kontakt(request):
     return render(request, 'Kontakt.html')
-
+@csrf_exempt
 def login_view(request):
-    return render(request, 'Log-In.html')
+    if request.method == 'GET':
+        return render(request, 'Log-In.html')
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            password = data.get('password')
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Ungültige JSON-Daten'}, status=400)
+
+        user = authenticate(request, email=email, password=password)  # <- HIER wird dein Backend benutzt
+
+        if user is not None:
+            login(request, user)
+            return JsonResponse({'message': 'Login erfolgreich'})
+        else:
+            return JsonResponse({'error': 'Ungültige Anmeldedaten'}, status=401)
 
 def datenschutz(request):
     return render(request, 'Datenschutz.html')
@@ -26,18 +55,9 @@ def ordner_detail(request, slug):
     ordner = get_object_or_404(Ordner, slug=slug)
     return render(request, 'ordner_detail.html', {'ordner': ordner})
 
-# views.py
 def rezensionen_anzeigen(request):
     bewertungen = Bewertung.objects.all()
     return render(request, 'Reviews.html', {'bewertungen': bewertungen}) 
-
-
-from django.http import JsonResponse, HttpResponseBadRequest
-from django.views.decorators.csrf import csrf_exempt
-from .models import Bewertung
-import json
-from django.contrib.auth.models import User
-from .models import Bewertung, Nutzer  # 👈 Importiere dein eigenes Modell
 
 @csrf_exempt
 def rezension_erstellen(request):
@@ -53,20 +73,21 @@ def rezension_erstellen(request):
         text = payload.get('text', '').strip()
         sterne = int(payload.get('sterne', 5))
         titel = payload.get('titel', '')[:25]
-        nutzer_id = payload.get('nutzerid')  # 👈 ID vom Nutzer im JSON mitschicken
-        print(f"Nutzer ID: {nutzer_id}"),
+        nutzer_id = payload.get('nutzerid')
+        print(f"Nutzer ID: {nutzer_id}")
+        
         if not text:
             return HttpResponseBadRequest("Text darf nicht leer sein")
         if not nutzer_id:
             return HttpResponseBadRequest("nutzer_id fehlt")
 
-        nutzer = Nutzer.objects.get(pk=nutzer_id)  # 👈 hole den Nutzer aus der DB
+        nutzer = Nutzer.objects.get(pk=nutzer_id)
 
         bew = Bewertung.objects.create(
             titel=titel or '-',
             beschreibung=text,
             sternezahl=sterne,
-            nutzerid= nutzer  # 👈 nutzerid, nicht "User"
+            nutzerid=nutzer
         )
 
         return JsonResponse({
@@ -80,11 +101,6 @@ def rezension_erstellen(request):
     except Exception as e:
         print("Fehler beim Parsen/Speichern:", e)
         return HttpResponseBadRequest(f"Fehler: {e}")
-
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
-from .models import Ordner
-from django.utils.text import slugify
 
 @csrf_exempt
 def ordner_erstellen(request):
