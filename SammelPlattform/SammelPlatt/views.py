@@ -30,13 +30,39 @@ def login_view(request):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Ungültige JSON-Daten'}, status=400)
 
-        user = authenticate(request, email=email, password=password)  # <- HIER wird dein Backend benutzt
+        # UID aus E-Mail extrahieren, z. B. "max.muster@schule.local" → "max.muster"
+        uid = email.split('@')[0] if email else ''
 
-        if user is not None:
-            login(request, user)
-            return JsonResponse({'message': 'Login erfolgreich'})
-        else:
-            return JsonResponse({'error': 'Ungültige Anmeldedaten'}, status=401)
+        # === LDAP-Konfig ===
+        from ldap3 import Server, Connection, SUBTREE
+        LDAP_SERVER = 'ldaps://ldaps.htlwy.at'
+        BIND_DN = 'cn=ldap-ro,ou=services,dc=schule,dc=local'
+        BIND_PASSWORD = '8b6d0aa2-ee34-412e-a50b-9ba991c512bd'
+        BASE_DN = 'ou=users,dc=schule,dc=local'
+
+        try:
+            # Verbindung zum LDAP-Server mit read-only Account
+            server = Server(LDAP_SERVER, use_ssl=True)
+            conn = Connection(server, user=BIND_DN, password=BIND_PASSWORD, auto_bind=True)
+
+            # Benutzer-DN suchen
+            conn.search(BASE_DN, f'(uid={uid})', search_scope=SUBTREE, attributes=['cn', 'uid'])
+            if not conn.entries:
+                return JsonResponse({'error': 'Benutzer nicht gefunden'}, status=401)
+
+            user_dn = conn.entries[0].entry_dn
+
+            # Jetzt versuchen mit Benutzer-DN + Passwort zu binden
+            user_conn = Connection(server, user=user_dn, password=password, auto_bind=True)
+
+            if user_conn.bound:
+                # Erfolg
+                return JsonResponse({'message': 'Login erfolgreich'})
+            else:
+                return JsonResponse({'error': 'Login fehlgeschlagen'}, status=401)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
 
 def datenschutz(request):
     return render(request, 'Datenschutz.html')

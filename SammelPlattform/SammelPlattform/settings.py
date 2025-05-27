@@ -74,7 +74,7 @@ DATABASES = {
        'NAME': 'sammelplattform',
        'USER': 'django_user',
        'PASSWORD': 'dein_starkes_passwort',
-       'HOST': '10.111.0.148',
+       'HOST': '192.168.95.27',
        'PORT': '3306',
     }
 }

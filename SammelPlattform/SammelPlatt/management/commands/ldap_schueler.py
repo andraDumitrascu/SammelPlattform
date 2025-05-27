@@ -1,50 +1,88 @@
-from django.core.management.base import BaseCommand
-from ldap3 import Server, Connection, ALL, SUBTREE, Tls
-import ssl
-import os
-from dotenv import load_dotenv
-load_dotenv()
-print("DEBUG: BIND_DN =", os.getenv("LDAP_BIND_DN"))
-print("DEBUG: BIND_PW =", os.getenv("LDAP_BIND_PASSWORD"))
-print("DEBUG: LDAP_HOST =", os.getenv('LDAP_HOST'))
-class Command(BaseCommand):
-    help = "Zeigt alle Schüler-Logins aus dem LDAP-Verzeichnis an"
+ 
+from ldap3 import Server, Connection, SUBTREE
 
-    def handle(self, *args, **options):
-        ldap_host = os.getenv("LDAP_HOST")
-        bind_dn = os.getenv("LDAP_BIND_DN")
-        bind_pw = os.getenv("LDAP_BIND_PASSWORD")
-        user_search_base = os.getenv("LDAP_USER_SEARCH")
+from getpass import getpass
+ 
+# === 1. Read-Only Bind-Zugang ===
 
-        if not all([ldap_host, bind_dn, bind_pw, user_search_base]):
-            self.stderr.write("Fehlende LDAP Umgebungsvariablen.")
-            return
+LDAP_SERVER = 'ldaps.htlwy.at'
 
-        # TLS-Konfiguration zum Ignorieren von Zertifikaten (nicht für Prod)
-        tls_config = Tls(validate=ssl.CERT_NONE)
-        server = Server(ldap_host, use_ssl=True, get_info=ALL, tls=tls_config)
-        conn = Connection(server, bind_dn, bind_pw, auto_bind=True)
+LDAP_PORT = 636
 
-        # Beispiel: Schüler gehören zur Gruppe "cn=Schueler,..."
-        search_filter = "(memberOf=cn=Schueler,ou=Gruppen,dc=Schule,dc=lokal)"
-        attributes = ["uid", "givenName", "sn", "mail"]
+LDAP_USE_SSL = True
 
-        self.stdout.write("📚 Schüler-Logins aus LDAP:\n")
+BIND_DN = 'cn=ldap-ro,ou=services,dc=schule,dc=local'
 
-        conn.search(
-            search_base=user_search_base,
-            search_filter=search_filter,
-            search_scope=SUBTREE,
-            attributes=attributes
-        )
+BIND_PASSWORD = '8b6d0aa2-ee34-412e-a50b-9ba991c512bd'
 
-        if not conn.entries:
-            self.stdout.write("⚠️ Keine Schüler gefunden.")
-        else:
-            for entry in conn.entries:
-                uid = entry.uid.value
-                name = f"{entry.givenName.value} {entry.sn.value}"
-                email = entry.mail.value
-                self.stdout.write(f"👤 {uid} | {name} | {email}")
+BASE_DN = 'ou=users,dc=schule,dc=local'
+ 
+# === 2. Schüler-Login über Eingabe ===
 
-        conn.unbind()
+print("🔐 Benutzer-Login testen")
+
+uid = input("Benutzername (uid): ")
+
+user_password = getpass("Passwort: ")
+ 
+# === 3. Verbindung mit Read-Only Account herstellen ===
+
+server = Server(LDAP_SERVER, port=LDAP_PORT, use_ssl=LDAP_USE_SSL)
+ 
+print("🌐 Verbinde mit LDAPS...")
+
+conn = Connection(server, user=BIND_DN, password=BIND_PASSWORD, auto_bind=True)
+
+print("✅ Read-only Bind erfolgreich.")
+ 
+# === 4. Benutzer-DN suchen ===
+
+search_filter = f'(uid={uid})'
+
+conn.search(
+
+    search_base=BASE_DN,
+
+    search_filter=search_filter,
+
+    search_scope=SUBTREE,
+
+    attributes=['cn', 'mail', 'uid']
+
+)
+ 
+if not conn.entries:
+
+    print("❌ Benutzer nicht gefunden.")
+
+    conn.unbind()
+
+else:
+
+    entry = conn.entries[0]
+
+    user_dn = entry.entry_dn
+
+    print(f"✅ Benutzer gefunden: {user_dn}")
+
+    print("📄 LDAP-Daten:")
+
+    print(entry.entry_attributes_as_dict)
+ 
+    # === 5. Authentifizierung mit Benutzerpasswort testen ===
+
+    print("🔐 Versuche Benutzer-Login...")
+
+    user_conn = Connection(server, user=user_dn, password=user_password, auto_bind=True)
+
+    if user_conn.bound:
+
+        print("✅ Login erfolgreich!")
+
+        user_conn.unbind()
+
+    else:
+
+        print("❌ Login fehlgeschlagen – Passwort falsch?")
+ 
+    conn.unbind()
