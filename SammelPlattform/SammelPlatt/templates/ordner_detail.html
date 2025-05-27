@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ aktueller_ordner.titel }} - Social Solutions</title>
+    <link rel="stylesheet" href="{% static 'Galerie.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="{% static 'Galerie.js' %}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
+</head>
+<body class="light-mode min-h-screen flex flex-col">
+    <div class="background-pattern"></div>
+
+    <nav class="fixed top-0 w-full py-4 flex justify-center space-x-8 text-lg font-semibold backdrop-blur-md bg-white bg-opacity-10 shadow-lg">
+        <a href="{% url 'home' %}" class="hover:text-yellow-300 transition">Home</a>
+        <a href="{% url 'home' %}#features" class="hover:text-yellow-300 transition">Features</a>
+        <a href="{% url 'home' %}#portfolio" class="hover:text-yellow-300 transition">Portfolio</a>
+        <a href="{% url 'reviews' %}" class="hover:text-yellow-300 transition">Rezension</a>
+        <a href="{% url 'kontakt' %}" class="hover:text-yellow-300 transition">Kontakt</a>
+        <button onclick="toggleDarkMode()" class="ml-6 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 transition">🌙/☀️</button>
+    </nav>
+
+    <section id="galerie" class="galerie-container">
+        <h2 class="galerie-title">{{ aktueller_ordner.titel }}
+            <button onclick="Ordnerhinzufuegen()" id="ordnerhinzufügen">+ Unterordner hinzufügen</button>
+        </h2>
+
+        {% if unterordner %}
+        <h3 class="galerie-title">Unterordner</h3>
+        <div id="Ordner">
+            {% for ordner in unterordner %}
+            <div class="ordner">
+                <input type="text" class="ordner-name-input" value="{{ ordner.titel }}" readonly>
+                <img src="{% static 'Bilder/Ordner.png' %}" alt="Ordnerbild" class="ordner-bild" style="width: 200px;" onclick="window.location.href='/galerie/{{ ordner.slug }}/'">
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if fotos %}
+        <h3 class="galerie-title">Bilder</h3>
+        <div id="Ordner">
+            {% for bild in fotos %}
+            <div class="ordner">
+                <img src="{{ bild.foto }}" alt="Bild" class="ordner-bild" style="width: 200px;">
+                <p>{{ bild.beschreibung }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p>Keine Bilder vorhanden.</p>
+        {% endif %}
+    </section>
+
+    <footer class="footer">
+        <p>©2025 Social Solutions. Alle Rechte vorbehalten. <a href="{% url 'terms' %}">Nutzungsbedingungen</a>.</p>
+    </footer>
+
+    <script>
+        const ORDNER_BILD_URL = "{% static 'Bilder/Ordner.png' %}";
+        const aktuellerSlug = "{{ aktueller_ordner.slug }}";  // Für JavaScript
+    </script>
+</body>
+</html>

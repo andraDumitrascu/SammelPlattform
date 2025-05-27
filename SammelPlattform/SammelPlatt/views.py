@@ -52,12 +52,14 @@ def galerie(request):
     return render(request, 'Galerie.html', {'ordner': ordner})
 
 def ordner_detail(request, slug):
-    ordner = get_object_or_404(Ordner, slug=slug)
-    fotos = ordner.foto_set.all()  # Zugriff auf zugehörige Fotos per ForeignKey
+    aktueller_ordner = get_object_or_404(Ordner, slug=slug)
 
-    return render(request, 'Galerie.html', {
-        'ordner': Ordner.objects.all(),  # damit die Ordnerliste wie gewohnt da ist
-        'aktueller_ordner': ordner,
+    unterordner = Ordner.objects.filter(inordner=aktueller_ordner)
+    fotos = aktueller_ordner.foto_set.all()
+
+    return render(request, 'ordner_detail.html', {
+        'aktueller_ordner': aktueller_ordner,
+        'unterordner': unterordner,
         'fotos': fotos
     })
 
@@ -121,7 +123,15 @@ def ordner_erstellen(request):
         if Ordner.objects.filter(slug=slug).exists():
             return JsonResponse({'success': False, 'error': 'Ordner existiert bereits'})
 
-        ordner = Ordner.objects.create(titel=titel, pfad='/', slug=slug)
+        parent_slug = request.GET.get('parent')
+        parent_ordner = Ordner.objects.filter(slug=parent_slug).first()
+
+        ordner = Ordner.objects.create(
+            titel=titel,
+            pfad=f'/{parent_slug}/' if parent_slug else '/',
+            slug=slug,
+            inordner=parent_ordner
+        )
         return JsonResponse({'success': True, 'slug': ordner.slug})
     
     return JsonResponse({'success': False, 'error': 'Ungültige Methode'})
