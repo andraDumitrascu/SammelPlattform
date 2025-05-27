@@ -53,7 +53,14 @@ def galerie(request):
 
 def ordner_detail(request, slug):
     ordner = get_object_or_404(Ordner, slug=slug)
-    return render(request, 'ordner_detail.html', {'ordner': ordner})
+    fotos = ordner.foto_set.all()  # Zugriff auf zugehörige Fotos per ForeignKey
+
+    return render(request, 'Galerie.html', {
+        'ordner': Ordner.objects.all(),  # damit die Ordnerliste wie gewohnt da ist
+        'aktueller_ordner': ordner,
+        'fotos': fotos
+    })
+
 
 def rezensionen_anzeigen(request):
     bewertungen = Bewertung.objects.all()

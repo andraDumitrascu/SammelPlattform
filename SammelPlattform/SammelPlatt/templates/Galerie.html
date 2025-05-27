@@ -24,7 +24,15 @@
 
     <section id="galerie" class="galerie-container">
         <h2 class="galerie-title">Galerie <button onclick="Ordnerhinzufuegen()" id="ordnerhinzufügen">+ Ordner hinzufügen</button></h2>
-        <div id="Ordner"></div>
+        <div id="Ordner">
+        {% for ordner in ordner %}
+        <div class="ordner">
+            <input type="text" class="ordner-name-input" value="{{ ordner.titel }}" readonly>
+            <img src="{% static 'Bilder/Ordner.png' %}" alt="Ordnerbild" class="ordner-bild" style="width: 200px;" onclick="window.location.href='/galerie/{{ ordner.slug }}/'">
+        </div>
+        {% endfor %}
+    </div>
+
     </section>
 
     <footer class="footer">
