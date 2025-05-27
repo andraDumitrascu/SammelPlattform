@@ -167,3 +167,35 @@ def ordner_erstellen(request):
         return JsonResponse({'success': True, 'slug': ordner.slug})
     
     return JsonResponse({'success': False, 'error': 'Ungültige Methode'})
+
+@csrf_exempt
+def ordner_loeschen(request, slug):
+    if request.method == 'DELETE':
+        try:
+            ordner = get_object_or_404(Ordner, slug=slug)
+            ordner.delete()
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    return JsonResponse({'success': False, 'error': 'Ungültige Methode'}, status=405)
+
+@csrf_exempt
+def ordner_umbenennen(request, slug):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            neuer_name = data.get('name', '').strip()
+
+            if not neuer_name:
+                return JsonResponse({'success': False, 'error': 'Kein neuer Name angegeben'})
+
+            ordner = get_object_or_404(Ordner, slug=slug)
+            ordner.titel = neuer_name
+            ordner.slug = slugify(neuer_name)
+            ordner.save()
+
+            return JsonResponse({'success': True, 'neuer_slug': ordner.slug})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    return JsonResponse({'success': False, 'error': 'Ungültige Methode'}, status=405)
+
