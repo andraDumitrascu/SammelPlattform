@@ -146,18 +146,24 @@ def ordner_erstellen(request):
             return JsonResponse({'success': False, 'error': 'Kein Name angegeben'})
 
         slug = slugify(titel)
-        if Ordner.objects.filter(slug=slug).exists():
-            return JsonResponse({'success': False, 'error': 'Ordner existiert bereits'})
+        parent_slug = data.get('parent')  # besser aus POST-Daten statt GET
 
-        parent_slug = request.GET.get('parent')
-        parent_ordner = Ordner.objects.filter(slug=parent_slug).first()
+        parent_ordner = Ordner.objects.filter(slug=parent_slug).first() if parent_slug else None
+
+        # Prüfe auf Doppelung im gleichen Parent
+        if Ordner.objects.filter(slug=slug, inOrdner=parent_ordner).exists():
+            return JsonResponse({'success': False, 'error': 'Ordner mit diesem Namen existiert bereits im aktuellen Ordner'})
+
+        # Pfad korrekt zusammensetzen
+        pfad = f"{parent_ordner.pfad}{slug}/" if parent_ordner else "/"
 
         ordner = Ordner.objects.create(
             titel=titel,
-            pfad=f'/{parent_slug}/' if parent_slug else '/',
+            pfad=pfad,
             slug=slug,
-            inordner=parent_ordner
+            inOrdner=parent_ordner
         )
+
         return JsonResponse({'success': True, 'slug': ordner.slug})
     
     return JsonResponse({'success': False, 'error': 'Ungültige Methode'})

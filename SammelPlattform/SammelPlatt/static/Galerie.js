@@ -9,7 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-function Ordnerhinzufuegen() {
+/**
+ * Ordner hinzufügen.
+ * @param {string|null} parentSlug Optional: Slug des Parent-Ordners.
+ */
+function Ordnerhinzufuegen(parentSlug = null) {
     const alleEingaben = document.querySelectorAll('.ordner-name-input');
     for (const eingabe of alleEingaben) {
         if (eingabe.value.trim() === '') {
@@ -25,19 +29,23 @@ function Ordnerhinzufuegen() {
         return;
     }
 
-    // 1. AJAX-Request an Django
+    const payload = { name: ordnerName.trim() };
+    if (parentSlug) {
+        payload.parent = parentSlug;
+    }
+
     fetch('/api/ordner-erstellen/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCSRFToken()
         },
-        body: JSON.stringify({ name: ordnerName.trim() })
+        body: JSON.stringify(payload)
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Optional: Sofort im DOM anzeigen (falls du nicht weiterleitest)
+            // Ordner im DOM anzeigen
             const neuerOrdner = document.createElement('div');
             neuerOrdner.className = 'ordner';
 
@@ -64,7 +72,7 @@ function Ordnerhinzufuegen() {
             const ordnerContainer = document.getElementById('Ordner');
             ordnerContainer.appendChild(neuerOrdner);
 
-            // Alternativ: Direkt weiterleiten
+            // Optional: Weiterleitung
             // window.location.href = `/galerie/${data.slug}/`;
         } else {
             alert(data.error || "Fehler beim Erstellen des Ordners.");
