@@ -73,8 +73,9 @@ def terms(request):
 def reviews(request):
     return render(request, 'Reviews.html')
 
+
 def galerie(request):
-    ordner = Ordner.objects.all()
+    ordner = Ordner.objects.filter(inordner__isnull=True)
     return render(request, 'Galerie.html', {'ordner': ordner})
 
 def ordner_detail(request, slug):
@@ -140,32 +141,41 @@ def rezension_erstellen(request):
 @csrf_exempt
 def ordner_erstellen(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        titel = data.get('name')
-        if not titel:
-            return JsonResponse({'success': False, 'error': 'Kein Name angegeben'})
+        try:
+            data = json.loads(request.body)
+            titel = data.get('name')
+            parent_slug = data.get('parent')  # aus JSON-Body
 
-        slug = slugify(titel)
-        parent_slug = data.get('parent')  # besser aus POST-Daten statt GET
+            if not titel:
+                return JsonResponse({'success': False, 'error': 'Kein Name angegeben'})
 
-        parent_ordner = Ordner.objects.filter(slug=parent_slug).first() if parent_slug else None
+            slug = slugify(titel)
+            if Ordner.objects.filter(slug=slug).exists():
+                return JsonResponse({'success': False, 'error': 'Ordner existiert bereits'})
 
-        # Prüfe auf Doppelung im gleichen Parent
-        if Ordner.objects.filter(slug=slug, inOrdner=parent_ordner).exists():
-            return JsonResponse({'success': False, 'error': 'Ordner mit diesem Namen existiert bereits im aktuellen Ordner'})
+            parent_ordner = None
+            if parent_slug:
+                parent_ordner = Ordner.objects.filter(slug=parent_slug).first()
 
-        # Pfad korrekt zusammensetzen
-        pfad = f"{parent_ordner.pfad}{slug}/" if parent_ordner else "/"
+            # Pfad zusammensetzen:
+            if parent_ordner:
+                # pfad des parents + neuer slug + Slash
+                pfad = parent_ordner.pfad.rstrip('/') + '/' + slug + '/'
+            else:
+                pfad = '/' + slug + '/'
 
-        ordner = Ordner.objects.create(
-            titel=titel,
-            pfad=pfad,
-            slug=slug,
-            inOrdner=parent_ordner
-        )
+            ordner = Ordner.objects.create(
+                titel=titel,
+                slug=slug,
+                inordner=parent_ordner,
+                pfad=pfad
+            )
 
-        return JsonResponse({'success': True, 'slug': ordner.slug})
-    
+            return JsonResponse({'success': True, 'slug': ordner.slug})
+
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
     return JsonResponse({'success': False, 'error': 'Ungültige Methode'})
 
 @csrf_exempt

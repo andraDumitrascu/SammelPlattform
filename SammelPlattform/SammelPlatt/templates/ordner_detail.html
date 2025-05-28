@@ -23,7 +23,8 @@
 
     <section id="galerie" class="galerie-container">
         <h2 class="galerie-title">{{ aktueller_ordner.titel }}
-            <button onclick="Ordnerhinzufuegen()" id="ordnerhinzufügen">+ Unterordner hinzufügen</button>
+            <button onclick="Ordnerhinzufuegen('{{ aktueller_ordner.slug }}')" id="ordnerhinzufügen">+ Unterordner hinzufügen</button>
+
         </h2>
 
         {% if unterordner %}
