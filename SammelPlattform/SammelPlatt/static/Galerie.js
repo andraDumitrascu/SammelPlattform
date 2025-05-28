@@ -90,3 +90,60 @@ function getCSRFToken() {
         .find(row => row.startsWith('csrftoken='));
     return cookieValue ? decodeURIComponent(cookieValue.split('=')[1]) : '';
 }
+
+function OrdnerUmbenennen(slug) {
+    const neuerName = prompt("Neuer Ordnername:");
+
+    if (!neuerName || neuerName.trim() === '') {
+        alert("Der neue Ordnername darf nicht leer sein.");
+        return;
+    }
+
+    fetch(`/api/ordner-umbenennen/${slug}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken()
+        },
+        body: JSON.stringify({ name: neuerName.trim() })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Ordner erfolgreich umbenannt!");
+            location.reload(); // oder den Namen im DOM direkt ändern
+        } else {
+            alert(data.error || "Fehler beim Umbenennen.");
+        }
+    })
+    .catch(error => {
+        console.error("Fehler beim Umbenennen:", error);
+        alert("Ein Fehler ist aufgetreten.");
+    });
+}
+
+function OrdnerLoeschen(slug) {
+    if (!confirm("Möchtest du diesen Ordner wirklich löschen?")) {
+        return;
+    }
+
+    fetch(`/api/ordner-loeschen/${slug}/`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRFToken': getCSRFToken()
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Ordner gelöscht.");
+            location.reload(); // oder entferne das Element per JS aus dem DOM
+        } else {
+            alert(data.error || "Fehler beim Löschen.");
+        }
+    })
+    .catch(error => {
+        console.error("Fehler beim Löschen:", error);
+        alert("Ein Fehler ist aufgetreten.");
+    });
+}
