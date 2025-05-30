@@ -33,7 +33,8 @@
             {% for ordner in unterordner %}
             <div class="ordner">
                 <input type="text" class="ordner-name-input" value="{{ ordner.titel }}" readonly>
-                <img src="{% static 'Bilder/Ordner.png' %}" alt="Ordnerbild" class="ordner-bild" style="width: 200px;" onclick="window.location.href='/galerie/{{ ordner.slug }}/'">
+                <img src="{% static 'Bilder/Ordner.png' %}" alt="Ordnerbild" class="ordner-bild" style="width: 200px;"
+     onclick="window.location.href='/galerie/{{ ordner.get_full_slug_path }}/'">
             </div>
             {% endfor %}
         </div>

@@ -79,12 +79,19 @@ def galerie(request):
     oberordner = Ordner.objects.filter(inordner__isnull=True)
     return render(request, 'Galerie.html', {'ordner': oberordner})
 
-def ordner_detail(request, slug):
-    aktueller_ordner = get_object_or_404(Ordner, slug=slug)
-    unterordner = Ordner.objects.filter(inordner=aktueller_ordner)
-    fotos = Foto.objects.filter(ordid=aktueller_ordner)
+def ordner_detail(request, slug_path):
+    slug_list = slug_path.strip('/').split('/')
+    ordner = None
+    for slug in slug_list:
+        if ordner is None:
+            ordner = get_object_or_404(Ordner, slug=slug, inordner__isnull=True)
+        else:
+            ordner = get_object_or_404(Ordner, slug=slug, inordner=ordner)
+
+    unterordner = Ordner.objects.filter(inordner=ordner)
+    fotos = Foto.objects.filter(ordid=ordner)
     return render(request, 'ordner_detail.html', {
-        'aktueller_ordner': aktueller_ordner,
+        'aktueller_ordner': ordner,
         'unterordner': unterordner,
         'fotos': fotos
     })
