@@ -1,4 +1,3 @@
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -199,3 +198,75 @@ def ordner_umbenennen(request, slug):
             return JsonResponse({'success': False, 'error': str(e)}, status=500)
     return JsonResponse({'success': False, 'error': 'Ungültige Methode'}, status=405)
 
+from .models import Foto, Ordner, Kategorie
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse, HttpResponseBadRequest
+import datetime
+
+from .models import Foto, Ordner
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse, HttpResponseBadRequest
+import datetime
+
+@csrf_exempt
+def upload_foto(request):
+    print("Upload-Foto View aufgerufen")
+    if request.method == 'POST':
+        print("POST Request empfangen")
+        try:
+            beschreibung = request.POST.get('beschreibung', 'süßes Hundefoto')
+            slug = request.POST.get('slug')
+            print(f"Beschreibung: {beschreibung}, Slug: {slug}")
+
+            ordner = Ordner.objects.get(slug=slug)
+            bild = request.FILES.get('bild')
+
+            if not bild:
+                print("Kein Bild im Request")
+                return JsonResponse({'success': False, 'error': 'Kein Bild hochgeladen'})
+
+            print(f"Bild empfangen: {bild.name}")
+
+            neues_foto = Foto.objects.create(
+                beschreibung=beschreibung,
+                ordid=ordner,
+                hochladedatum=datetime.date.today(),
+                foto=bild,
+                gesamtbewertung=0.0
+            )
+
+            print("Foto erfolgreich gespeichert")
+            return JsonResponse({'success': True, 'foto_id': neues_foto.fotoid})
+        except Exception as e:
+            print(f"Fehler beim Upload: {e}")
+            return JsonResponse({'success': False, 'error': str(e)})
+    else:
+        print("Kein POST Request")
+    return HttpResponseBadRequest('Nur POST erlaubt')
+
+
+
+import base64
+from django.shortcuts import get_object_or_404, render
+from .models import Foto, Ordner
+
+def galerie_ordner_detail(request, slug):
+    aktueller_ordner = get_object_or_404(Ordner, slug=slug)
+    unterordner = Ordner.objects.filter(inOrdner=aktueller_ordner)
+    fotos = Foto.objects.filter(ordid=aktueller_ordner)
+
+    return render(request, 'ordner_detail.html', {
+        'aktueller_ordner': aktueller_ordner,
+        'unterordner': unterordner,
+        'fotos': fotos,
+    })
+
+
+from django.shortcuts import get_object_or_404
+from django.http import FileResponse
+from django.shortcuts import get_object_or_404
+from django.http import FileResponse
+
+def foto_anzeigen(request, foto_id):
+    foto = get_object_or_404(Foto, pk=foto_id)
+    return FileResponse(foto.foto.open(), content_type='image/jpeg')

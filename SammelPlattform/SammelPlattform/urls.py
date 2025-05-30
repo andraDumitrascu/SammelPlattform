@@ -18,6 +18,10 @@ from django.urls import path
 from SammelPlatt import views
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
+
+
 
 
 urlpatterns = [
@@ -30,5 +34,7 @@ urlpatterns = [
     path('galerie/', views.galerie, name='galerie'),
     path('', include('SammelPlatt.urls')),
     path('admin/', admin.site.urls),
-
-]
+    path('upload/', views.upload_foto, name='upload_foto'),
+] 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

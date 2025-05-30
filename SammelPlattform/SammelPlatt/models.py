@@ -71,7 +71,7 @@ class Foto(models.Model):
     hochladedatum = models.DateField(db_column='HochladeDatum', blank=True, null=True)
     gesamtbewertung = models.FloatField(db_column='Gesamtbewertung')
     ordid = models.ForeignKey('Ordner', models.DO_NOTHING, db_column='OrdID')
-    foto = models.TextField(db_column='Foto')
+    foto = models.ImageField(upload_to='uploads/')
 
     class Meta:
         db_table = 'foto'
