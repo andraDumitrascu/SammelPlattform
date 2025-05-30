@@ -10,7 +10,8 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Ordner, Bild
+from SammelPlatt.models import Ordner, Foto
+
 
 def home(request):
     return render(request, 'Home.html')
@@ -81,8 +82,7 @@ def galerie(request):
 def ordner_detail(request, slug):
     aktueller_ordner = get_object_or_404(Ordner, slug=slug)
     unterordner = Ordner.objects.filter(inordner=aktueller_ordner)
-    fotos = Bild.objects.filter(ordner=aktueller_ordner)
-
+    fotos = Foto.objects.filter(ordid=aktueller_ordner)
     return render(request, 'ordner_detail.html', {
         'aktueller_ordner': aktueller_ordner,
         'unterordner': unterordner,

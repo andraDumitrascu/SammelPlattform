@@ -42,11 +42,9 @@
         {% if fotos %}
         <h3 class="galerie-title">Bilder</h3>
         <div id="Ordner">
-            {% for bild in fotos %}
-            <div class="ordner">
-                <img src="{{ bild.foto.url }}" alt="Bild" class="ordner-bild" style="width: 200px;">
-                <p>{{ bild.beschreibung }}</p>
-            </div>
+            {% for foto in fotos %}
+            <img src="{{ foto.foto }}" alt="Foto">
+            <p>{{ foto.beschreibung }}</p>
             {% endfor %}
         </div>
         {% else %}
