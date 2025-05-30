@@ -106,5 +106,13 @@ class Ordner(models.Model):
             self.slug = slugify(self.titel)
         super().save(*args, **kwargs)
 
+    def get_full_slug_path(self):
+        parts = []
+        current = self
+        while current:
+            parts.insert(0, current.slug)
+            current = current.inordner
+        return '/'.join(parts)
+
     def __str__(self):
         return self.titel
