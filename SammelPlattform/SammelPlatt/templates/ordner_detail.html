@@ -44,7 +44,7 @@
         <div id="Ordner">
             {% for bild in fotos %}
             <div class="ordner">
-                <img src="{{ bild.foto }}" alt="Bild" class="ordner-bild" style="width: 200px;">
+                <img src="{{ bild.foto.url }}" alt="Bild" class="ordner-bild" style="width: 200px;">
                 <p>{{ bild.beschreibung }}</p>
             </div>
             {% endfor %}
