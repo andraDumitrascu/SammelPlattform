@@ -29,10 +29,9 @@ function Ordnerhinzufuegen(parentSlug = null) {
         return;
     }
 
-    // JSON Body mit optionalem Parent-Slug
-    const bodyData = { name: ordnerName.trim() };
+    const payload = { name: ordnerName.trim() };
     if (parentSlug) {
-        bodyData.parent = parentSlug;
+        payload.parent = parentSlug;
     }
 
     fetch('/api/ordner-erstellen/', {
@@ -41,11 +40,12 @@ function Ordnerhinzufuegen(parentSlug = null) {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCSRFToken()
         },
-        body: JSON.stringify(bodyData)
+        body: JSON.stringify(payload)
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            // Ordner im DOM anzeigen
             const neuerOrdner = document.createElement('div');
             neuerOrdner.className = 'ordner';
 
@@ -72,6 +72,8 @@ function Ordnerhinzufuegen(parentSlug = null) {
             const ordnerContainer = document.getElementById('Ordner');
             ordnerContainer.appendChild(neuerOrdner);
 
+            // Optional: Weiterleitung
+            // window.location.href = `/galerie/${data.slug}/`;
         } else {
             alert(data.error || "Fehler beim Erstellen des Ordners.");
         }

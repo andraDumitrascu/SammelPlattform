@@ -9,7 +9,6 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import JsonResponse
-from SammelPlatt.models import Ordner, Foto
 
 
 def home(request):
@@ -73,24 +72,18 @@ def terms(request):
 def reviews(request):
     return render(request, 'Reviews.html')
 
-
 def galerie(request):
-    oberordner = Ordner.objects.filter(inordner__isnull=True)
-    return render(request, 'Galerie.html', {'ordner': oberordner})
+    ordner = Ordner.objects.all()
+    return render(request, 'Galerie.html', {'ordner': ordner})
 
-def ordner_detail(request, slug_path):
-    slug_list = slug_path.strip('/').split('/')
-    ordner = None
-    for slug in slug_list:
-        if ordner is None:
-            ordner = get_object_or_404(Ordner, slug=slug, inordner__isnull=True)
-        else:
-            ordner = get_object_or_404(Ordner, slug=slug, inordner=ordner)
+def ordner_detail(request, slug):
+    aktueller_ordner = get_object_or_404(Ordner, slug=slug)
 
-    unterordner = Ordner.objects.filter(inordner=ordner)
-    fotos = Foto.objects.filter(ordid=ordner)
+    unterordner = Ordner.objects.filter(inordner=aktueller_ordner)
+    fotos = aktueller_ordner.foto_set.all()
+
     return render(request, 'ordner_detail.html', {
-        'aktueller_ordner': ordner,
+        'aktueller_ordner': aktueller_ordner,
         'unterordner': unterordner,
         'fotos': fotos
     })
@@ -146,41 +139,32 @@ def rezension_erstellen(request):
 @csrf_exempt
 def ordner_erstellen(request):
     if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            titel = data.get('name')
-            parent_slug = data.get('parent')  # aus JSON-Body
+        data = json.loads(request.body)
+        titel = data.get('name')
+        if not titel:
+            return JsonResponse({'success': False, 'error': 'Kein Name angegeben'})
 
-            if not titel:
-                return JsonResponse({'success': False, 'error': 'Kein Name angegeben'})
+        slug = slugify(titel)
+        parent_slug = data.get('parent')  # besser aus POST-Daten statt GET
 
-            slug = slugify(titel)
-            if Ordner.objects.filter(slug=slug).exists():
-                return JsonResponse({'success': False, 'error': 'Ordner existiert bereits'})
+        parent_ordner = Ordner.objects.filter(slug=parent_slug).first() if parent_slug else None
 
-            parent_ordner = None
-            if parent_slug:
-                parent_ordner = Ordner.objects.filter(slug=parent_slug).first()
+        # Prüfe auf Doppelung im gleichen Parent
+        if Ordner.objects.filter(slug=slug, inOrdner=parent_ordner).exists():
+            return JsonResponse({'success': False, 'error': 'Ordner mit diesem Namen existiert bereits im aktuellen Ordner'})
 
-            # Pfad zusammensetzen:
-            if parent_ordner:
-                # pfad des parents + neuer slug + Slash
-                pfad = parent_ordner.pfad.rstrip('/') + '/' + slug + '/'
-            else:
-                pfad = '/' + slug + '/'
+        # Pfad korrekt zusammensetzen
+        pfad = f"{parent_ordner.pfad}{slug}/" if parent_ordner else "/"
 
-            ordner = Ordner.objects.create(
-                titel=titel,
-                slug=slug,
-                inordner=parent_ordner,
-                pfad=pfad
-            )
+        ordner = Ordner.objects.create(
+            titel=titel,
+            pfad=pfad,
+            slug=slug,
+            inOrdner=parent_ordner
+        )
 
-            return JsonResponse({'success': True, 'slug': ordner.slug})
-
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
-
+        return JsonResponse({'success': True, 'slug': ordner.slug})
+    
     return JsonResponse({'success': False, 'error': 'Ungültige Methode'})
 
 @csrf_exempt
