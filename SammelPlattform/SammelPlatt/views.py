@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import JsonResponse
 from SammelPlatt.models import Ordner, Foto
+from django.http import HttpResponseNotFound
 
 
 def home(request):
@@ -79,18 +80,15 @@ def galerie(request):
     return render(request, 'Galerie.html', {'ordner': oberordner})
 
 def ordner_detail(request, slug_path):
-    slug_list = slug_path.strip('/').split('/')
-    ordner = None
-    for slug in slug_list:
-        if ordner is None:
-            ordner = get_object_or_404(Ordner, slug=slug, inordner__isnull=True)
-        else:
-            ordner = get_object_or_404(Ordner, slug=slug, inordner=ordner)
+    aktueller_ordner = Ordner.get_by_slug_path(slug_path)
+    if not aktueller_ordner:
+        return HttpResponseNotFound("Ordner nicht gefunden")
 
-    unterordner = Ordner.objects.filter(inordner=ordner)
-    fotos = Foto.objects.filter(ordid=ordner)
+    unterordner = Ordner.objects.filter(inordner=aktueller_ordner)
+    fotos = Foto.objects.filter(ordid=aktueller_ordner)
+
     return render(request, 'ordner_detail.html', {
-        'aktueller_ordner': ordner,
+        'aktueller_ordner': aktueller_ordner,
         'unterordner': unterordner,
         'fotos': fotos
     })
