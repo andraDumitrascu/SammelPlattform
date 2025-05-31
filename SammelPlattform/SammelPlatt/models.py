@@ -108,6 +108,7 @@ class Ordner(models.Model):
             self.slug = slugify(self.titel)
         super().save(*args, **kwargs)
 
+
     def get_full_slug_path(self):
         parts = []
         current = self
@@ -115,7 +116,6 @@ class Ordner(models.Model):
             parts.insert(0, current.slug)
             current = current.inordner
         return '/'.join(parts)
-
     @classmethod
     def get_by_slug_path(cls, slug_path):
         slugs = slug_path.strip('/').split('/')
@@ -126,6 +126,3 @@ class Ordner(models.Model):
             except cls.DoesNotExist:
                 return None
         return current
-
-    def __str__(self):
-        return self.get_full_slug_path()
