@@ -9,8 +9,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import JsonResponse
-from SammelPlatt.models import Ordner, Foto
-from django.http import HttpResponseNotFound
+
 
 def home(request):
     return render(request, 'Home.html')
@@ -77,15 +76,11 @@ def galerie(request):
     ordner = Ordner.objects.all()
     return render(request, 'Galerie.html', {'ordner': ordner})
 
-
-def ordner_detail(request, slug_path):
-    aktueller_ordner = Ordner.get_by_slug_path(slug_path)
-    if not aktueller_ordner:
-        return HttpResponseNotFound("Ordner nicht gefunden")
+def ordner_detail(request, slug):
+    aktueller_ordner = get_object_or_404(Ordner, slug=slug)
 
     unterordner = Ordner.objects.filter(inordner=aktueller_ordner)
-    fotos = Foto.objects.filter(ordid=aktueller_ordner)
-
+    fotos = aktueller_ordner.foto_set.all()
 
     return render(request, 'ordner_detail.html', {
         'aktueller_ordner': aktueller_ordner,
@@ -155,7 +150,7 @@ def ordner_erstellen(request):
         parent_ordner = Ordner.objects.filter(slug=parent_slug).first() if parent_slug else None
 
         # Prüfe auf Doppelung im gleichen Parent
-        if Ordner.objects.filter(slug=slug, inOrdner=parent_ordner).exists():
+        if Ordner.objects.filter(slug=slug, inordner=parent_ordner).exists():
             return JsonResponse({'success': False, 'error': 'Ordner mit diesem Namen existiert bereits im aktuellen Ordner'})
 
         # Pfad korrekt zusammensetzen
@@ -165,7 +160,7 @@ def ordner_erstellen(request):
             titel=titel,
             pfad=pfad,
             slug=slug,
-            inOrdner=parent_ordner
+            inordner=parent_ordner
         )
 
         return JsonResponse({'success': True, 'slug': ordner.slug})
@@ -208,10 +203,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponseBadRequest
 import datetime
 
-from .models import Foto, Ordner
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse, HttpResponseBadRequest
-import datetime
 
 @csrf_exempt
 def upload_foto(request):

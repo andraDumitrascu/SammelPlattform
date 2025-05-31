@@ -64,19 +64,18 @@ class Bewertung(models.Model):
 # -----------------------------
 # Foto
 # -----------------------------
-from django.utils.timezone import now
-
 class Foto(models.Model):
     beschreibung = models.CharField(db_column='Beschreibung', max_length=60, blank=True, null=True)
     kategorieid = models.ForeignKey('Kategorie', models.DO_NOTHING, db_column='KategorieID')
     fotoid = models.AutoField(db_column='FotoID', primary_key=True)
-    hochladedatum = models.DateField(db_column='HochladeDatum', default=now)
-    gesamtbewertung = models.FloatField(db_column='Gesamtbewertung', default=0.0)
+    hochladedatum = models.DateField(db_column='HochladeDatum', blank=True, null=True)
+    gesamtbewertung = models.FloatField(db_column='Gesamtbewertung')
     ordid = models.ForeignKey('Ordner', models.DO_NOTHING, db_column='OrdID')
     foto = models.ImageField(upload_to='uploads/')
 
     class Meta:
         db_table = 'foto'
+
 
 # -----------------------------
 # Kategorie
@@ -97,32 +96,15 @@ class Ordner(models.Model):
     titel = models.CharField(unique=True, max_length=45)
     pfad = models.CharField(max_length=45)
     inordner = models.ForeignKey('self', models.DO_NOTHING, db_column='inOrdner', blank=True, null=True)
-    slug = models.SlugField(max_length=60, blank=True)
+    slug = models.SlugField(unique=True, max_length=60, blank=True)
 
     class Meta:
         db_table = 'ordner'
-        unique_together = ('slug', 'inordner')
 
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.titel)
         super().save(*args, **kwargs)
 
-
-    def get_full_slug_path(self):
-        parts = []
-        current = self
-        while current:
-            parts.insert(0, current.slug)
-            current = current.inordner
-        return '/'.join(parts)
-    @classmethod
-    def get_by_slug_path(cls, slug_path):
-        slugs = slug_path.strip('/').split('/')
-        current = None
-        for slug in slugs:
-            try:
-                current = cls.objects.get(slug=slug, inordner=current)
-            except cls.DoesNotExist:
-                return None
-        return current
+    def __str__(self):
+        return self.titel

@@ -74,7 +74,7 @@ DATABASES = {
        'NAME': 'sammelplattform',
        'USER': 'django_user',
        'PASSWORD': 'dein_starkes_passwort',
-       'HOST': '172.20.10.5',
+       'HOST': '10.0.0.194',
        'PORT': '3306',
     }
 }
@@ -214,3 +214,4 @@ LOGGING = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+LOGIN_REDIRECT_URL = '/galerie/'

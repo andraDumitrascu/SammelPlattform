@@ -31,32 +31,122 @@
         <div id="Ordner">
             {% for ordner in unterordner %}
             <div class="ordner">
-                <input type="text" class="ordner-name-input" value="{{ ordner.titel }}" readonly>
-                <img src="{% static 'Bilder/Ordner.png' %}" alt="Ordnerbild" class="ordner-bild"
-                     onclick="window.location.href='{% url 'ordner_detail' slug_path=ordner.get_full_slug_path %}'"
-                     style="width: 200px; cursor: pointer;">
+                <img src = "{{foto.foto.url}}" alt ="Bild"/>
             </div>
             {% endfor %}
         </div>
         {% endif %}
         
         {% if aktueller_ordner and aktueller_ordner.titel %}
-        <!-- Drag & Drop Upload Bereich -->
-        <h3 class="galerie-title mt-10">Foto hochladen</h3>
-        <div id="drop-area" class="border-4 border-dashed border-gray-400 rounded p-6 text-center cursor-pointer hover:bg-gray-100 transition">
-            <p class="text-lg text-gray-600">Ziehe ein Bild hierher oder klicke zum Hochladen</p>
-            <input type="file" id="fileElem" accept="image/*" style="display:none">
-        </div>
-        {% endif %}
+    <!-- Drag & Drop Upload Bereich -->
+    <h3 class="galerie-title mt-10">Foto hochladen</h3>
+    <div id="drop-area" class="border-4 border-dashed border-gray-400 rounded p-6 text-center cursor-pointer hover:bg-gray-100 transition">
+        <p class="text-lg text-gray-600">Ziehe ein Bild hierher oder klicke zum Hochladen</p>
+        <input type="file" id="fileElem" accept="image/*" style="display:none">
+    </div>
+{% endif %}
+
 
         <!-- Bilderanzeige -->
-        <div class="flex flex-wrap gap-4">
-          {% for bild in fotos %}
-            <img src="{{ bild.foto.url }}" alt="{{ bild.beschreibung }}" class="max-w-xs">
-          {% endfor %}
-        </div>
+       <div class="flex flex-wrap gap-4">
+  {% for bild in fotos %}
+    <img src="{{ bild.foto.url }}" alt="{{ bild.beschreibung }}" class="max-w-xs">
+  {% endfor %}
+</div>
+<script>
+  const dropArea = document.getElementById('drop-area');
+  const fileInput = document.getElementById('fileElem');
 
-    <!-- Rest deines Scripts bleibt unverändert -->
+  // Klick auf den Drop-Bereich öffnet den Dateiauswahl-Dialog
+  dropArea.addEventListener('click', () => {
+    fileInput.click();
+  });
 
-</body>
-</html>
+  // Optional: Wenn eine Datei ausgewählt wurde
+  fileInput.addEventListener('change', (event) => {
+    const files = event.target.files;
+    console.log('Datei ausgewählt:', files);
+    // Hier kannst du die Datei hochladen oder eine Vorschau anzeigen
+  });
+
+  // Optional: Drag & Drop Events (für optische Rückmeldung)
+  dropArea.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    dropArea.classList.add('bg-gray-200');  // Beispiel für Hover-Effekt
+  });
+
+  dropArea.addEventListener('dragleave', (event) => {
+    event.preventDefault();
+    dropArea.classList.remove('bg-gray-200');
+  });
+
+  dropArea.addEventListener('drop', (event) => {
+    event.preventDefault();
+    dropArea.classList.remove('bg-gray-200');
+    const files = event.dataTransfer.files;
+    console.log('Dateien fallen gelassen:', files);
+    // Hier kannst du Upload starten
+  });
+
+  fileInput.addEventListener('change', async (event) => {
+  const files = event.target.files;
+  if (files.length === 0) return;
+
+  const formData = new FormData();
+  formData.append('bild', files[0]);
+  formData.append('beschreibung', 'Beschreibung hier');  // Optional
+  formData.append('slug', '{{ aktueller_ordner.slug }}'); // Wichtig, damit der Ordner zugeordnet wird
+
+  try {
+    const response = await fetch('/upload/', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert('Foto erfolgreich hochgeladen! ID: ' + result.foto_id);
+      location.reload(); // Seite neu laden, um das neue Bild zu sehen
+    } else {
+      alert('Fehler beim Hochladen: ' + (result.error || 'Unbekannter Fehler'));
+    }
+  } catch (error) {
+    alert('Netzwerkfehler: ' + error.message);
+  }
+});
+
+dropArea.addEventListener('drop', async (event) => {
+  event.preventDefault();
+  dropArea.classList.remove('bg-gray-200');
+  
+  const files = event.dataTransfer.files;
+  console.log('Dateien fallen gelassen:', files);
+
+  if (files.length === 0) return;
+
+  const formData = new FormData();
+  formData.append('bild', files[0]);
+  formData.append('beschreibung', 'Beschreibung hier');  // Optional, kann man dynamisch machen
+  formData.append('slug', '{{ aktueller_ordner.slug }}');
+
+  try {
+    const response = await fetch('/upload/', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert('Foto erfolgreich hochgeladen! ID: ' + result.foto_id);
+      location.reload(); // Seite neu laden, um das neue Bild zu sehen
+    } else {
+      alert('Fehler beim Hochladen: ' + (result.error || 'Unbekannter Fehler'));
+    }
+  } catch (error) {
+    alert('Netzwerkfehler: ' + error.message);
+  }
+});
+
+</script>
