@@ -129,10 +129,10 @@ def rezensionen_anzeigen(request):
     bewertungen = Bewertung.objects.all()
     return render(request, 'Reviews.html', {'bewertungen': bewertungen}) 
 
-from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Bewertung
+from django.http import JsonResponse
 import json
+from .models import Bewertung, Nutzer, Foto
 
 @csrf_exempt
 def bewertung_erstellen(request):
@@ -141,11 +141,17 @@ def bewertung_erstellen(request):
         titel = daten.get('titel')
         beschreibung = daten.get('text')
         sterne = daten.get('sterne')
-        # Beispielhafte Zuordnung: nutzerid und fotoid musst du selbst anpassen!
-        # z.B. Nutzer und Foto per ID holen, hier Platzhalter mit ID 1
-        from .models import Nutzer, Foto
-        nutzer = Nutzer.objects.get(pk=1)
-        foto = Foto.objects.get(pk=1)
+
+        # Beispielhafte Zuordnung: Nutzer per ID holen (hier 1), Foto optional holen
+        try:
+            nutzer = Nutzer.objects.get(pk=1)
+        except Nutzer.DoesNotExist:
+            return JsonResponse({'error': 'Nutzer nicht gefunden'}, status=404)
+
+        try:
+            foto = Foto.objects.get(pk=1)
+        except Foto.DoesNotExist:
+            foto = None  # Optional: kein Foto vorhanden
 
         bewertung = Bewertung(
             titel=titel,
@@ -163,6 +169,7 @@ def bewertung_erstellen(request):
         })
 
     return JsonResponse({'error': 'Nur POST erlaubt'}, status=400)
+
 
 @csrf_exempt
 def ordner_erstellen(request):
