@@ -9,10 +9,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="{% static 'Reviews.js' %}"></script>
     <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
+    <script>
+        const csrfToken = '{{ csrf_token }}';  // <- CSRF-Token für sichere POSTs
+    </script>
 </head>
 <body class="light-mode min-h-screen flex flex-col">
     <div class="background-pattern"></div>
-    
+
     <nav class="fixed top-0 w-full py-4 flex justify-center space-x-8 text-lg font-semibold backdrop-blur-md bg-white bg-opacity-10 shadow-lg">
         <a href="{% url 'home' %}" class="hover:text-yellow-300 transition">Home</a>
         <a href="{% url 'home' %}#features" class="hover:text-yellow-300 transition">Features</a>
@@ -21,6 +24,8 @@
         <a href="{% url 'kontakt' %}" class="hover:text-yellow-300 transition">Kontakt</a>
         <button onclick="toggleDarkMode()" class="ml-6 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 transition">🌙/☀️</button>
     </nav>
+
+    <form style="display: none">{% csrf_token %}</form>
 
     <section id="review" class="review-container">
         <h2 class="review-title">
@@ -36,7 +41,6 @@
                 </div>
             {% endfor %}
         </div>
-        
     </section>
 
     <footer class="footer">

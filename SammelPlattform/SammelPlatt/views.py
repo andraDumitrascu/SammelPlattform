@@ -129,46 +129,40 @@ def rezensionen_anzeigen(request):
     bewertungen = Bewertung.objects.all()
     return render(request, 'Reviews.html', {'bewertungen': bewertungen}) 
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import Bewertung
+import json
+
 @csrf_exempt
-def rezension_erstellen(request):
-    if request.method != 'POST':
-        return HttpResponseBadRequest("Nur POST erlaubt")
+def bewertung_erstellen(request):
+    if request.method == 'POST':
+        daten = json.loads(request.body)
+        titel = daten.get('titel')
+        beschreibung = daten.get('text')
+        sterne = daten.get('sterne')
+        # Beispielhafte Zuordnung: nutzerid und fotoid musst du selbst anpassen!
+        # z.B. Nutzer und Foto per ID holen, hier Platzhalter mit ID 1
+        from .models import Nutzer, Foto
+        nutzer = Nutzer.objects.get(pk=1)
+        foto = Foto.objects.get(pk=1)
 
-    try:
-        payload = json.loads(request.body)
-        text = payload.get('text', '').strip()
-        sterne = int(payload.get('sterne', 5))
-        titel = payload.get('titel', '')[:25]
-        nutzer_id = payload.get('nutzerid')
-
-        if not text:
-            return HttpResponseBadRequest("Text darf nicht leer sein")
-        if not nutzer_id:
-            return HttpResponseBadRequest("nutzer_id fehlt")
-
-        nutzer = Nutzer.objects.get(pk=nutzer_id)
-
-        bew = Bewertung.objects.create(
-            titel=titel or '-',
-            beschreibung=text,
+        bewertung = Bewertung(
+            titel=titel,
+            beschreibung=beschreibung,
             sternezahl=sterne,
-            nutzerid=nutzer
+            nutzerid=nutzer,
+            fotoid=foto
         )
+        bewertung.save()
 
         return JsonResponse({
-            'id': bew.pk,
-            'titel': bew.titel,
-            'beschreibung': bew.beschreibung,
-            'sternezahl': bew.sternezahl,
-            'nutzerid': nutzer.pk
-        }, status=201)
+            'titel': bewertung.titel,
+            'beschreibung': bewertung.beschreibung,
+            'sterne': bewertung.sternezahl,
+        })
 
-    except Exception as e:
-        return HttpResponseBadRequest(f"Fehler: {e}")
-
-from django.conf import settings
-import os
-from django.core.files import File
+    return JsonResponse({'error': 'Nur POST erlaubt'}, status=400)
 
 @csrf_exempt
 def ordner_erstellen(request):

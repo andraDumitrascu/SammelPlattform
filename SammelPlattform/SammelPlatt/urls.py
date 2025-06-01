@@ -9,7 +9,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('reviews/', views.rezensionen_anzeigen, name='reviews'),
-    path('rezension-erstellen/', views.rezension_erstellen, name='rezension_erstellen'),
+    path('bewertung-erstellen/', views.bewertung_erstellen, name='bewertung_erstellen'),
     path('galerie/', views.galerie, name='galerie'),
     path('galerie/<slug:slug>/', views.ordner_detail, name='ordner_detail'),
     path('api/ordner-erstellen/', views.ordner_erstellen, name='ordner_erstellen'),

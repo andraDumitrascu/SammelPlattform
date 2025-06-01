@@ -1,3 +1,13 @@
+function getCSRFToken() {
+    const name = 'csrftoken';
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        let [key, value] = cookie.trim().split('=');
+        if (key === name) return decodeURIComponent(value);
+    }
+    return '';
+}
+
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'enabled' : 'disabled');
@@ -16,39 +26,50 @@ function Rezesionhinzufuegen() {
     const eingabeFeld = document.createElement('input');
     eingabeFeld.type = 'text';
     eingabeFeld.placeholder = 'Gib deine Rezension ein...';
-    eingabeFeld.className = 'eingabe-feld'; 
-    
+    eingabeFeld.className = 'eingabe-feld';
+
     const hinzufuegenButton = document.createElement('button');
     hinzufuegenButton.textContent = 'Hinzufügen';
-    hinzufuegenButton.className = 'hinzufuegen-button'; 
-    hinzufuegenButton.onclick = async function() {
-        const rezensionText = eingabeFeld.value;
+    hinzufuegenButton.className = 'hinzufuegen-button';
+
+    hinzufuegenButton.onclick = async function () {
+        const rezensionText = eingabeFeld.value.trim();
         if (rezensionText) {
-            // ➤ Neue Rezension an Django senden
             try {
-                const response = await fetch("/rezension-erstellen/", {
+                const response = await fetch("/bewertung-erstellen/", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCSRFToken()
                     },
                     body: JSON.stringify({
-                        titel: "Neue Rezension",
+                        titel: "Neue Bewertung",
                         text: rezensionText,
                         sterne: 5
-                        //nutzerid: nutzerid //Fehler!
                     })
                 });
 
-                if (!response.ok) throw new Error("Fehler beim Senden");
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        alert("Du musst eingeloggt sein, um eine Rezension zu schreiben.");
+                        return;
+                    }
+                    throw new Error("Fehler beim Senden");
+                }
 
                 const data = await response.json();
 
-                // ➤ Ausgabe im DOM aktualisieren
                 const neuerOrdner = document.createElement('div');
                 neuerOrdner.className = 'rezension-text';
 
+                // Falls backend kein 'benutzer' zurückgibt, kannst du diesen Teil anpassen
+                textContent = `Titel: ${data.titel} (${data.sterne} Sterne)`;
+                if (data.benutzer) {
+                    textContent += ` von ${data.benutzer}`;
+                }
+
                 const text = document.createElement('p');
-                text.textContent = data.beschreibung;
+                text.textContent = textContent;
                 neuerOrdner.appendChild(text);
 
                 document.getElementById('rezension').appendChild(neuerOrdner);
@@ -60,7 +81,6 @@ function Rezesionhinzufuegen() {
                 alert("Fehler beim Speichern der Rezension");
                 console.error(error);
             }
-
         } else {
             alert('Bitte gib eine Rezension ein.');
         }
