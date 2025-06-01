@@ -86,7 +86,7 @@
         <a href="{% url 'bild_bearbeiten' bild.fotoid %}" class="px-4 py-2 text-sm hover:bg-gray-100" style="color:black;">✏️ Bearbeiten</a>
         <button onclick="alert('Instagram-Upload folgt')" class="px-4 py-2 text-sm hover:bg-gray-100" style="color:black;">📸 Instagram</button>
         <button 
-      onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent('{{ bild.foto.url }}'), '_blank', 'width=600,height=400')" 
+      onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent('{{ foto.foto.url }}'), '_blank', 'width=600,height=400')" 
       class="px-4 py-2 text-sm hover:bg-gray-100" 
       style="color:black;">
       📘 Facebook
