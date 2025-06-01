@@ -88,17 +88,18 @@ def ordner_detail(request, slug):
 from django.shortcuts import get_object_or_404, redirect
 from .models import Foto  # ggf. anpassen
 
-def bild_loeschen(request, bild_id):
-    bild = get_object_or_404(Foto, id=bild_id)
-    
+def bild_loeschen(request, fotoid):
+    bild = get_object_or_404(Foto, fotoid=fotoid)
+   
     # Optional: Überprüfen, ob der Benutzer berechtigt ist
     if request.method == 'POST':
-        ordner_slug = bild.ordner.slug  # für Redirect
+        ordner_slug = bild.ordid.slug  # für Redirect
         bild.foto.delete()  # löscht Datei vom Speicher
         bild.delete()       # löscht Datenbankeintrag
         return redirect('ordner_detail', slug=ordner_slug)
-
+ 
     return redirect('ordner_detail', slug=bild.ordner.slug)
+
 
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Foto

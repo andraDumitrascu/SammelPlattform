@@ -22,6 +22,10 @@
         <button onclick="toggleDarkMode()" class="ml-6 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 transition">🌙/☀️</button>
     </nav>
 
+
+
+
+
     <section id="galerie" class="galerie-container mt-32">
         <h2 class="galerie-title">{{ aktueller_ordner.titel }}
             <button onclick="Ordnerhinzufuegen('{{ aktueller_ordner.ordid }}')" id="ordnerhinzufügen">
@@ -29,21 +33,33 @@
 </button>
         </h2>
 
-{% if unterordner %}
+{% if aktueller_ordner.inordner %}
+  <div class="back-arrow" style="position: fixed; top: 60px; left: 20px; z-index: 101;">
+    <a href="{% url 'ordner_detail' aktueller_ordner.inordner.slug %}" title="Zurück zum Ordner {{ aktueller_ordner.inordner.titel }}">
+      <img src="{% static 'Bilder/Pfeil.png' %}" alt="Zurück Pfeil" style="width: 30px; height: auto;">
+    </a>
+  </div>
+{% else %}
+  <div class="back-arrow" style="position: fixed; top: 60px; left: 20px; z-index: 101;">
+    <a href="{% url 'galerie' %}" title="Zurück zur Galerie">
+      <img src="{% static 'Bilder/Pfeil.png' %}" alt="Zurück Pfeil" style="width: 30px; height: auto;">
+    </a>
+  </div>
+{% endif %}  {% if unterordner %}
   <h3>Unterordner</h3>
-  <div id="Ordner" class="flex flex-wrap gap-6">
+  <div id="Ordner">
     {% for ordner in unterordner %}
-      <div class="ordner flex flex-col items-center cursor-pointer hover:text-yellow-300 transition">
-        <a href="{% url 'ordner_detail' ordner.slug %}">
-          <img src="{% static 'Bilder/Ordner.png' %}" alt="Ordner Icon" class="w-24 h-24 object-contain mb-2">
-          <p class="text-center font-semibold">{{ ordner.titel }}</p>
-        </a>
+      <div class="ordner">
+        <input type="text" class="ordner-name-input" value="{{ ordner.titel }}" readonly>
+        <img src="{% static 'Bilder/Ordner.png' %}" alt="Ordnerbild" class="ordner-bild" style="width: 200px; cursor: pointer;" onclick="window.location.href='/galerie/{{ ordner.slug }}/'">
       </div>
     {% endfor %}
   </div>
 {% else %}
-  <p>Keine Unterordner gefunden.</p>
+  <p>Keine Unterordner gefunden.
 {% endif %}
+
+
 
         
         {% if aktueller_ordner and aktueller_ordner.titel %}
@@ -57,9 +73,9 @@
 
 
         <!-- Bilderanzeige -->
-     <div class="flex flex-wrap gap-4">
+       <div class="flex flex-wrap gap-4">
   {% for bild in fotos %}
-    <div class="relative group image-container max-w-xs">
+        <div class="relative group image-container max-w-xs">
       <img src="{{ bild.foto.url }}" alt="{{ bild.beschreibung }}" class="rounded-lg shadow-lg cursor-pointer">
       <div class="hidden group-hover:flex flex-col absolute top-2 right-2 bg-white border border-gray-200 rounded shadow-md z-10">
         <a href="{{ bild.foto.url }}" download class="px-4 py-2 text-sm hover:bg-gray-100">⬇️ Herunterladen</a>
@@ -74,7 +90,6 @@
     </div>
   {% endfor %}
 </div>
-
 <script>
   const dropArea = document.getElementById('drop-area');
   const fileInput = document.getElementById('fileElem');

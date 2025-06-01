@@ -17,7 +17,7 @@ urlpatterns = [
     path('api/ordner-umbenennen/<slug:slug>/', views.ordner_umbenennen, name='ordner_umbenennen'),
     path('login/', views.login_view, name='login'),
     path('upload/', views.upload_foto, name='upload_foto'),
-     path('bild/<int:bild_id>/loeschen/', views.bild_loeschen, name='bild_loeschen'),
+    path('bild/<int:fotoid>/loeschen/', views.bild_loeschen, name='bild_loeschen'),
     path('bild/<int:fotoid>/bearbeiten/', views.bild_bearbeiten, name='bild_bearbeiten'),
 
 ]

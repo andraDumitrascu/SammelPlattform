@@ -122,3 +122,14 @@ nav {
         display:grid;
         
 }
+
+.back-arrow {
+    margin-bottom: 1rem;
+}
+.back-arrow img {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+.back-arrow img:hover {
+    transform: scale(1.2);
+}
