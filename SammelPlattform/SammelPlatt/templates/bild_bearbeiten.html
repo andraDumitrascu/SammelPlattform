@@ -7,45 +7,333 @@
     <link rel="stylesheet" href="{% static 'Galerie.css' %}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
+    <style>
+      #canvas {
+        border: 1px solid #000;
+        cursor: crosshair;
+        touch-action: none; /* Für Touchgeräte */
+      }
+      .toolbar {
+        margin-bottom: 10px;
+      }
+      .color-btn {
+        width: 28px;
+        height: 28px;
+        border: 1px solid #333;
+        display: inline-block;
+        cursor: pointer;
+        margin-right: 6px;
+        border-radius: 4px;
+      }
+      #filter-btns button {
+        margin-right: 8px;
+        margin-top: 8px;
+      }
+      .text-input-container {
+        margin-bottom: 10px;
+      }
+      input[type="text"] {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 100%;
+        max-width: 400px;
+      }
+    </style>
 </head>
 <body class="light-mode min-h-screen flex flex-col">
 
-    <nav class="fixed top-0 w-full py-4 flex justify-center space-x-8 text-lg font-semibold backdrop-blur-md bg-white bg-opacity-10 shadow-lg">
-        <a href="{% url 'home' %}" class="hover:text-yellow-300 transition">Home</a>
-        <a href="{% url 'home' %}#features" class="hover:text-yellow-300 transition">Features</a>
-        <a href="{% url 'home' %}#portfolio" class="hover:text-yellow-300 transition">Portfolio</a>
-        <a href="{% url 'reviews' %}" class="hover:text-yellow-300 transition">Rezension</a>
-        <a href="{% url 'kontakt' %}" class="hover:text-yellow-300 transition">Kontakt</a>
-    </nav>
+<nav class="fixed top-0 w-full py-4 flex justify-center space-x-8 text-lg font-semibold backdrop-blur-md bg-white bg-opacity-10 shadow-lg">
+    <a href="{% url 'home' %}" class="hover:text-yellow-300 transition">Home</a>
+    <a href="{% url 'home' %}#features" class="hover:text-yellow-300 transition">Features</a>
+    <a href="{% url 'home' %}#portfolio" class="hover:text-yellow-300 transition">Portfolio</a>
+    <a href="{% url 'reviews' %}" class="hover:text-yellow-300 transition">Rezension</a>
+    <a href="{% url 'kontakt' %}" class="hover:text-yellow-300 transition">Kontakt</a>
+</nav>
 
-    <main class="flex-grow container mx-auto px-4 pt-32">
-        <h2 class="text-3xl font-bold mb-6 text-yellow-400">Bild bearbeiten</h2>
+<main class="flex-grow container mx-auto px-4 pt-32">
+    <h2 class="text-3xl font-bold mb-6 text-yellow-400">Bild bearbeiten</h2>
 
-        <form method="post" enctype="multipart/form-data" class="max-w-xl bg-white bg-opacity-80 rounded-lg p-6 shadow-md">
-            {% csrf_token %}
+    <form method="post" enctype="multipart/form-data" class="max-w-xl bg-white bg-opacity-80 rounded-lg p-6 shadow-md">
+        {% csrf_token %}
 
-            <div class="mb-6">
-                <label for="beschreibung" class="block text-gray-700 font-semibold mb-2">Beschreibung:</label>
-                <input type="text" id="beschreibung" name="beschreibung" value="{{ bild.beschreibung }}" 
-                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400">
-            </div>
+        <div class="mb-6">
+            <label for="beschreibung" class="block text-gray-700 font-semibold mb-2">Beschreibung:</label>
+            <input type="text" id="beschreibung" name="beschreibung" value="{{ bild.beschreibung }}"
+                   class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400">
+        </div>
 
-            <div class="mb-6">
-                <label class="block text-gray-700 font-semibold mb-2">Aktuelles Bild:</label>
-                <img src="{{ bild.foto.url }}" alt="{{ bild.beschreibung }}" class="max-w-full rounded shadow mb-4">
-                <label for="foto" class="block text-gray-700 font-semibold mb-2">Neues Bild hochladen:</label>
-                <input type="file" id="foto" name="foto" 
-                       class="w-full text-gray-700 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400">
-            </div>
+        <div class="mb-6">
+            <label for="foto" class="block text-gray-700 font-semibold mb-2">Neues Bild hochladen:</label>
+            <input type="file" id="foto" name="foto"
+                   class="w-full text-gray-700 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400">
+        </div>
 
-            <div class="flex justify-end">
-                <button type="submit" 
-                        class="bg-yellow-400 text-white font-bold px-6 py-2 rounded hover:bg-yellow-500 transition">
-                    Speichern
-                </button>
-            </div>
-        </form>
-    </main>
+        <div class="mb-6">
+            <label class="block text-gray-700 font-semibold mb-2">Aktuelles Bild:</label>
+            <img src="{{ bild.foto.url }}" alt="Aktuelles Bild" class="max-w-full rounded shadow mb-4">
+        </div>
+
+        <!-- Canvas-Tool -->
+        <section class="mb-6 bg-white bg-opacity-80 p-4 rounded shadow">
+          <h3 class="text-xl font-semibold mb-4">Bild bearbeiten mit Pinsel, Text & Filter</h3>
+
+          <!-- Farben -->
+          <div class="toolbar mb-4">
+            Farben:
+            <div class="color-btn" style="background: black;" data-color="#000000"></div>
+            <div class="color-btn" style="background: red;" data-color="#ff0000"></div>
+            <div class="color-btn" style="background: green;" data-color="#00cc00"></div>
+            <div class="color-btn" style="background: blue;" data-color="#0000ff"></div>
+            <div class="color-btn" style="background: orange;" data-color="#ff6600"></div>
+            <div class="color-btn" style="background: purple;" data-color="#800080"></div>
+            <div class="color-btn" style="background: teal;" data-color="#008080"></div>
+          </div>
+
+          <!-- Text Eingabe -->
+          <div class="text-input-container">
+            <label for="text-input" class="block font-semibold text-gray-700 mb-1">Text zum Einfügen:</label>
+            <input type="text" id="text-input" value="Verschiebbarer Text">
+          </div>
+
+          <!-- Filter Buttons -->
+          <div id="filter-btns" class="mb-4">
+            Filter:
+            <button type="button" data-filter="none" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 transition">Kein Filter</button>
+            <button type="button" data-filter="grayscale" class="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500 transition">Graustufen</button>
+            <button type="button" data-filter="sepia" class="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500 transition">Sepia</button>
+            <button type="button" data-filter="invert" class="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500 transition">Invertieren</button>
+            <button type="button" data-filter="brightness" class="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500 transition">Helligkeit+</button>
+          </div>
+
+          <canvas id="canvas" width="800" height="500"></canvas>
+        </section>
+
+        <div class="flex justify-end">
+            <button type="submit"
+                    class="bg-yellow-400 text-white font-bold px-6 py-2 rounded hover:bg-yellow-500 transition">
+                Speichern
+            </button>
+        </div>
+    </form>
+</main>
+
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  // Pinsel-Variablen
+  let currentColor = '#000000';
+  let isDrawing = false;
+  let lastX = 0;
+  let lastY = 0;
+
+  // Text-Objekt
+  let textObj = {
+    text: document.getElementById('text-input').value,
+    x: 100,
+    y: 100,
+    width: 0,
+    height: 0,
+    dragging: false,
+    offsetX: 0,
+    offsetY: 0
+  };
+
+  // Zeichnung speichern (für genaueren Pinsel ohne verwischen)
+  let drawingData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+  // Pinsel malgenau einstellen
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 3;
+
+  // Farben-Buttons Event
+  document.querySelectorAll('.color-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentColor = btn.getAttribute('data-color');
+      // Visuelles Feedback (Highlight des gewählten Buttons)
+      document.querySelectorAll('.color-btn').forEach(b => b.style.borderColor = '#333');
+      btn.style.borderColor = '#FFD700';
+    });
+  });
+
+  // Text-Eingabe Event - Text aktualisieren
+  document.getElementById('text-input').addEventListener('input', (e) => {
+    textObj.text = e.target.value;
+    redrawCanvas();
+  });
+
+  // Maus-Events fürs Malen
+  canvas.addEventListener('mousedown', e => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    if (isMouseOnText(mouseX, mouseY)) {
+      textObj.dragging = true;
+      textObj.offsetX = mouseX - textObj.x;
+      textObj.offsetY = mouseY - textObj.y;
+      canvas.style.cursor = 'move';
+      return;
+    }
+
+    isDrawing = true;
+    lastX = mouseX;
+    lastY = mouseY;
+    canvas.style.cursor = 'crosshair';
+  });
+
+  canvas.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    if (textObj.dragging) {
+      textObj.x = mouseX - textObj.offsetX;
+      textObj.y = mouseY - textObj.offsetY;
+      redrawCanvas();
+      return;
+    }
+
+    if (!isDrawing) return;
+
+    ctx.strokeStyle = currentColor;
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(mouseX, mouseY);
+    ctx.stroke();
+
+    lastX = mouseX;
+    lastY = mouseY;
+  });
+
+  canvas.addEventListener('mouseup', e => {
+    if (isDrawing) {
+      isDrawing = false;
+      // Zeichnung nach Malen speichern (für klares Zeichnen)
+      drawingData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    }
+    if (textObj.dragging) {
+      textObj.dragging = false;
+      canvas.style.cursor = 'crosshair';
+    }
+  });
+
+  canvas.addEventListener('mouseout', e => {
+    isDrawing = false;
+    textObj.dragging = false;
+    canvas.style.cursor = 'crosshair';
+  });
+
+  // Prüfen ob Maus auf Text ist
+  function isMouseOnText(x, y) {
+    ctx.font = '24px Arial';
+    let textWidth = ctx.measureText(textObj.text).width;
+    let textHeight = 24; // Approximation
+    textObj.width = textWidth;
+    textObj.height = textHeight;
+    return (x >= textObj.x && x <= textObj.x + textWidth &&
+            y <= textObj.y && y >= textObj.y - textHeight);
+  }
+
+  // Text zeichnen
+  function drawText() {
+    ctx.font = '24px Arial';
+    ctx.fillStyle = 'black';
+    ctx.fillText(textObj.text, textObj.x, textObj.y);
+  }
+
+  // Canvas neu zeichnen (Zeichnung + Text)
+  function redrawCanvas() {
+    // Alte Zeichnung wiederherstellen
+    ctx.putImageData(drawingData, 0, 0);
+
+    // Text zeichnen
+    drawText();
+  }
+
+  // Filter anwenden
+  function applyFilter(filter) {
+    // Zeichnung in ImageData holen
+    let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let data = imageData.data;
+
+    switch(filter) {
+      case 'none':
+        // Keine Filter, zurücksetzen auf gespeicherte Zeichnung
+        ctx.putImageData(drawingData, 0, 0);
+        break;
+
+      case 'grayscale':
+        for(let i = 0; i < data.length; i += 4){
+          let avg = (data[i] + data[i+1] + data[i+2]) / 3;
+          data[i] = data[i+1] = data[i+2] = avg;
+        }
+        ctx.putImageData(imageData, 0, 0);
+        break;
+
+      case 'sepia':
+        for(let i = 0; i < data.length; i += 4){
+          let r = data[i], g = data[i+1], b = data[i+2];
+          data[i] = Math.min(0.393*r + 0.769*g + 0.189*b, 255);
+          data[i+1] = Math.min(0.349*r + 0.686*g + 0.168*b, 255);
+          data[i+2] = Math.min(0.272*r + 0.534*g + 0.131*b, 255);
+        }
+        ctx.putImageData(imageData, 0, 0);
+        break;
+
+      case 'invert':
+        for(let i = 0; i < data.length; i += 4){
+          data[i] = 255 - data[i];       // R
+          data[i+1] = 255 - data[i+1];   // G
+          data[i+2] = 255 - data[i+2];   // B
+        }
+        ctx.putImageData(imageData, 0, 0);
+        break;
+
+      case 'brightness':
+        for(let i = 0; i < data.length; i += 4){
+          data[i] = Math.min(data[i] + 40, 255);
+          data[i+1] = Math.min(data[i+1] + 40, 255);
+          data[i+2] = Math.min(data[i+2] + 40, 255);
+        }
+        ctx.putImageData(imageData, 0, 0);
+        break;
+    }
+
+    // Text nochmal drüber zeichnen
+    drawText();
+  }
+
+  // Filter Buttons Events
+  document.querySelectorAll('#filter-btns button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      let filter = btn.getAttribute('data-filter');
+      applyFilter(filter);
+    });
+  });
+
+  // *** Bild laden und in Canvas zeichnen ***
+  const image = new Image();
+  image.crossOrigin = "anonymous";
+  image.src = "{{ bild.foto.url }}";
+
+  image.onload = () => {
+    // Canvas an Bildgröße anpassen
+    canvas.width = image.width;
+    canvas.height = image.height;
+
+    ctx.drawImage(image, 0, 0);
+
+    // Zeichnung speichern
+    drawingData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+    redrawCanvas();
+  };
+</script>
 
 </body>
 </html>

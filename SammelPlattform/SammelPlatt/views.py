@@ -104,23 +104,26 @@ def bild_loeschen(request, fotoid):
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Foto
 
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Foto
+
 def bild_bearbeiten(request, fotoid):
-    # Hier 'fotoid' anstatt 'id' verwenden, weil das Feld so heißt
     bild = get_object_or_404(Foto, fotoid=fotoid)
 
     if request.method == 'POST':
-        beschreibung = request.POST.get('beschreibung', '').strip()
-        if beschreibung:
-            bild.beschreibung = beschreibung
+        beschreibung = request.POST.get('beschreibung', '')
+        neues_foto = request.FILES.get('foto')
 
-        if 'foto' in request.FILES:
-            bild.foto = request.FILES['foto']
+        bild.beschreibung = beschreibung
+
+        if neues_foto:
+            bild.foto.delete()  # optional: altes Bild löschen
+            bild.foto = neues_foto
 
         bild.save()
-        return redirect('ordner_detail', slug=bild.ordid.slug)  # Achtung: ordid ist FK zum Ordner, dort ggf .slug
+        return redirect('ordner_detail', slug=bild.ordid.slug)
 
     return render(request, 'bild_bearbeiten.html', {'bild': bild})
-
 
 def rezensionen_anzeigen(request):
     bewertungen = Bewertung.objects.all()
