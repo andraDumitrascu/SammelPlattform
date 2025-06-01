@@ -168,10 +168,7 @@ def ordner_erstellen(request):
                 inordner=parent_ordner
             )
 
-            # Bild aus static laden und setzen
-            ordner_bild_path = os.path.join(settings.BASE_DIR, 'static', 'Bilder', 'Ordner.png')
-            with open(ordner_bild_path, 'rb') as f:
-                neuer_ordner.bild.save('Ordner.png', File(f), save=False)
+           
 
             neuer_ordner.save()
 
