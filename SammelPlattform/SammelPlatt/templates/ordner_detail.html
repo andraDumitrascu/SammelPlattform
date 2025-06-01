@@ -34,15 +34,15 @@
         </h2>
 
 {% if aktueller_ordner.inordner %}
-  <div class="back-arrow" style="position: fixed; top: 60px; left: 20px; z-index: 101;">
+  <div class="back-arrow" style="position: fixed; top: 140px; left: 20px; z-index: 101;">
     <a href="{% url 'ordner_detail' aktueller_ordner.inordner.slug %}" title="Zurück zum Ordner {{ aktueller_ordner.inordner.titel }}">
-      <img src="{% static 'Bilder/Pfeil.png' %}" alt="Zurück Pfeil" style="width: 30px; height: auto;">
+      <img src="{% static 'Bilder/arr.png' %}" alt="Zurück Pfeil" style="width: 100px; height: auto;">
     </a>
   </div>
 {% else %}
-  <div class="back-arrow" style="position: fixed; top: 60px; left: 20px; z-index: 101;">
+  <div class="back-arrow" style="position: fixed; top: 140px; left: 20px; z-index: 101;">
     <a href="{% url 'galerie' %}" title="Zurück zur Galerie">
-      <img src="{% static 'Bilder/Pfeil.png' %}" alt="Zurück Pfeil" style="width: 30px; height: auto;">
+      <img src="{% static 'Bilder/arr.png' %}" alt="Zurück Pfeil" style="width: 100px; height: auto;">
     </a>
   </div>
 {% endif %}  {% if unterordner %}
