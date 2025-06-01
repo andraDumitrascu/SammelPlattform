@@ -78,14 +78,14 @@
         <div class="relative group image-container max-w-xs">
       <img src="{{ bild.foto.url }}" alt="{{ bild.beschreibung }}" class="rounded-lg shadow-lg cursor-pointer">
       <div class="hidden group-hover:flex flex-col absolute top-2 right-2 bg-white border border-gray-200 rounded shadow-md z-10">
-        <a href="{{ bild.foto.url }}" download class="px-4 py-2 text-sm hover:bg-gray-100">⬇️ Herunterladen</a>
+        <a href="{{ bild.foto.url }}" download class="px-4 py-2 text-sm hover:bg-gray-100" style="color:black;">⬇️ Herunterladen</a>
         <form action="{% url 'bild_loeschen' bild.fotoid %}" method="post">
           {% csrf_token %}
-        <button type="submit" class="px-4 py-2 text-sm hover:bg-red-100 text-red-600">🗑️ Löschen</button>
+        <button type="submit" class="px-4 py-2 text-sm hover:bg-red-100 text-red-600" style="color:black;">🗑️ Löschen</button>
         </form>
-        <a href="{% url 'bild_bearbeiten' bild.fotoid %}" class="px-4 py-2 text-sm hover:bg-gray-100">✏️ Bearbeiten</a>
-        <button onclick="alert('Instagram-Upload folgt')" class="px-4 py-2 text-sm hover:bg-gray-100">📸 Instagram</button>
-        <button onclick="alert('Facebook-Upload folgt')" class="px-4 py-2 text-sm hover:bg-gray-100">📘 Facebook</button>
+        <a href="{% url 'bild_bearbeiten' bild.fotoid %}" class="px-4 py-2 text-sm hover:bg-gray-100" style="color:black;">✏️ Bearbeiten</a>
+        <button onclick="alert('Instagram-Upload folgt')" class="px-4 py-2 text-sm hover:bg-gray-100" style="color:black;">📸 Instagram</button>
+        <button onclick="alert('Facebook-Upload folgt')" class="px-4 py-2 text-sm hover:bg-gray-100" style="color:black;">📘 Facebook</button>
       </div>
     </div>
   {% endfor %}
