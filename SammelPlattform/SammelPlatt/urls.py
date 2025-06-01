@@ -19,7 +19,7 @@ urlpatterns = [
     path('upload/', views.upload_foto, name='upload_foto'),
     path('bild/<int:fotoid>/loeschen/', views.bild_loeschen, name='bild_loeschen'),
     path('bild/<int:fotoid>/bearbeiten/', views.bild_bearbeiten, name='bild_bearbeiten'),
-
+    path('qr-code/<int:fotoid>/', views.qr_code_view, name='qr_code_view'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

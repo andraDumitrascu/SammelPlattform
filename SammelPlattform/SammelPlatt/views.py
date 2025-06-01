@@ -303,3 +303,16 @@ def galerie_ordner_detail(request, slug):
 def foto_anzeigen(request, foto_id):
     foto = get_object_or_404(Foto, pk=foto_id)
     return FileResponse(foto.foto.open(), content_type='image/jpeg')
+
+import qrcode
+from io import BytesIO
+from django.http import HttpResponse
+
+def qr_code_view(request, fotoid):
+    foto = get_object_or_404(Foto, fotoid=fotoid)
+    img_url = request.build_absolute_uri(foto.foto.url)
+
+    qr = qrcode.make(img_url)
+    response = HttpResponse(content_type="image/png")
+    qr.save(response, "PNG")
+    return response
