@@ -66,7 +66,13 @@ class Bewertung(models.Model):
 # -----------------------------
 class Foto(models.Model):
     beschreibung = models.CharField(db_column='Beschreibung', max_length=60, blank=True, null=True)
-    kategorieid = models.ForeignKey('Kategorie', models.DO_NOTHING, db_column='KategorieID')
+    kategorieid = models.ForeignKey(
+    'Kategorie',
+    on_delete=models.SET_NULL,
+    db_column='KategorieID',
+    null=True,
+    blank=True
+)
     fotoid = models.AutoField(db_column='FotoID', primary_key=True)
     hochladedatum = models.DateField(db_column='HochladeDatum', blank=True, null=True)
     gesamtbewertung = models.FloatField(db_column='Gesamtbewertung')
@@ -75,7 +81,6 @@ class Foto(models.Model):
 
     class Meta:
         db_table = 'foto'
-
 
 # -----------------------------
 # Kategorie

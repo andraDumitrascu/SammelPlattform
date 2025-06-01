@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
 </head>
 <body class="light-mode min-h-screen flex flex-col">
+
     <div class="background-pattern"></div>
 
     <nav class="fixed top-0 w-full py-4 flex justify-center space-x-8 text-lg font-semibold backdrop-blur-md bg-white bg-opacity-10 shadow-lg">
@@ -23,19 +24,27 @@
 
     <section id="galerie" class="galerie-container mt-32">
         <h2 class="galerie-title">{{ aktueller_ordner.titel }}
-            <button onclick="Ordnerhinzufuegen()" id="ordnerhinzufügen">+ Unterordner hinzufügen</button>
+            <button onclick="Ordnerhinzufuegen('{{ aktueller_ordner.ordid }}')" id="ordnerhinzufügen">
+    + Unterordner hinzufügen
+</button>
         </h2>
 
-        {% if unterordner %}
-        <h3 class="galerie-title">Unterordner</h3>
-        <div id="Ordner">
-            {% for ordner in unterordner %}
-            <div class="ordner">
-                <img src = "{{foto.foto.url}}" alt ="Bild"/>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
+{% if unterordner %}
+  <h3>Unterordner</h3>
+  <div id="Ordner" class="flex flex-wrap gap-6">
+    {% for ordner in unterordner %}
+      <div class="ordner flex flex-col items-center cursor-pointer hover:text-yellow-300 transition">
+        <a href="{% url 'ordner_detail' ordner.slug %}">
+          <img src="{% static 'Bilder/Ordner.png' %}" alt="Ordner Icon" class="w-24 h-24 object-contain mb-2">
+          <p class="text-center font-semibold">{{ ordner.titel }}</p>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>Keine Unterordner gefunden.</p>
+{% endif %}
+
         
         {% if aktueller_ordner and aktueller_ordner.titel %}
     <!-- Drag & Drop Upload Bereich -->
