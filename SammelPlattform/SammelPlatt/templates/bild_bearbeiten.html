@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Bild bearbeiten - {{ bild.beschreibung }}</title>
+    <link rel="stylesheet" href="{% static 'Galerie.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
+</head>
+<body class="light-mode min-h-screen flex flex-col">
+
+    <nav class="fixed top-0 w-full py-4 flex justify-center space-x-8 text-lg font-semibold backdrop-blur-md bg-white bg-opacity-10 shadow-lg">
+        <a href="{% url 'home' %}" class="hover:text-yellow-300 transition">Home</a>
+        <a href="{% url 'home' %}#features" class="hover:text-yellow-300 transition">Features</a>
+        <a href="{% url 'home' %}#portfolio" class="hover:text-yellow-300 transition">Portfolio</a>
+        <a href="{% url 'reviews' %}" class="hover:text-yellow-300 transition">Rezension</a>
+        <a href="{% url 'kontakt' %}" class="hover:text-yellow-300 transition">Kontakt</a>
+    </nav>
+
+    <main class="flex-grow container mx-auto px-4 pt-32">
+        <h2 class="text-3xl font-bold mb-6 text-yellow-400">Bild bearbeiten</h2>
+
+        <form method="post" enctype="multipart/form-data" class="max-w-xl bg-white bg-opacity-80 rounded-lg p-6 shadow-md">
+            {% csrf_token %}
+
+            <div class="mb-6">
+                <label for="beschreibung" class="block text-gray-700 font-semibold mb-2">Beschreibung:</label>
+                <input type="text" id="beschreibung" name="beschreibung" value="{{ bild.beschreibung }}" 
+                       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2">Aktuelles Bild:</label>
+                <img src="{{ bild.foto.url }}" alt="{{ bild.beschreibung }}" class="max-w-full rounded shadow mb-4">
+                <label for="foto" class="block text-gray-700 font-semibold mb-2">Neues Bild hochladen:</label>
+                <input type="file" id="foto" name="foto" 
+                       class="w-full text-gray-700 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400">
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit" 
+                        class="bg-yellow-400 text-white font-bold px-6 py-2 rounded hover:bg-yellow-500 transition">
+                    Speichern
+                </button>
+            </div>
+        </form>
+    </main>
+
+</body>
+</html>
