@@ -33,21 +33,24 @@ function Rezesionhinzufuegen() {
     hinzufuegenButton.className = 'hinzufuegen-button';
 
     hinzufuegenButton.onclick = async function () {
-        const rezensionText = eingabeFeld.value.trim();
-        if (rezensionText) {
-            try {
-                const response = await fetch("/bewertung-erstellen/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": getCSRFToken()
-                    },
+    const rezensionText = eingabeFeld.value.trim();
+    if (rezensionText) {
+        try {
+            const response = await fetch("/bewertung-erstellen/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                },
+                body: JSON.stringify({
                     body: JSON.stringify({
-                        titel: "Neue Bewertung",
-                        beschreibung: rezensionText,
-                        sterne: 5
-                    })
-                });
+    titel: rezensionText,
+    text: rezensionText,
+    sterne: 5
+})
+
+                })
+            });
 
                 if (!response.ok) {
                     if (response.status === 401) {
