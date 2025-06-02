@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
  
- 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
  
@@ -74,7 +74,7 @@ DATABASES = {
        'NAME': 'sammelplattform',
        'USER': 'django_user',
        'PASSWORD': 'dein_starkes_passwort',
-       'HOST': '10.0.0.194',
+       'HOST': '172.20.10.5',
        'PORT': '3306',
     }
 }
