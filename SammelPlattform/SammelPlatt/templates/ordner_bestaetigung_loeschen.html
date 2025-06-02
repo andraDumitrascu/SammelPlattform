@@ -1,0 +1,7 @@
+<h2>Möchtest du den Ordner "{{ ordner.name }}" wirklich löschen?</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">🗑️ Ja, löschen</button>
+  <a href="{% url 'galerie_start' %}">Abbrechen</a>
+</form>

@@ -21,6 +21,7 @@ urlpatterns = [
     path('bild/<int:fotoid>/bearbeiten/', views.bild_bearbeiten, name='bild_bearbeiten'),
     path('qr-code/<int:fotoid>/', views.qr_code_view, name='qr_code_view'),
     path('foto/<int:pk>/', views.foto_detail, name='foto_detail'),
+    path('ordner/<int:ordnerid>/loeschen/', views.ordner_loeschen, name='ordner_loeschen'),
 
 ]
 if settings.DEBUG:

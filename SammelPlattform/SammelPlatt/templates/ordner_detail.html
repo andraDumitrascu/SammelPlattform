@@ -47,14 +47,35 @@
   </div>
 {% endif %}  {% if unterordner %}
   <h3>Unterordner</h3>
-  <div id="Ordner">
-    {% for ordner in unterordner %}
-      <div class="ordner">
-        <input type="text" class="ordner-name-input" value="{{ ordner.titel }}" readonly>
-        <img src="{% static 'Bilder/Ordner.png' %}" alt="Ordnerbild" class="ordner-bild" style="width: 200px; cursor: pointer;" onclick="window.location.href='/galerie/{{ ordner.slug }}/'">
+  <h3>Unterordner von {{ aktueller_ordner.titel }}</h3>
+
+<div id="Ordner">
+  {% for ordner in unterordner %}
+    <div class="ordner">
+      <input type="text" class="ordner-name-input" value="{{ ordner.titel }}" readonly>
+
+      <img src="{% static 'Bilder/Ordner.png' %}"
+           alt="Ordnerbild"
+           class="ordner-bild"
+           style="width: 200px;"
+           onclick="window.location.href='/galerie/{{ ordner.slug }}/'">
+
+      <!-- Löschbutton -->
+      <div class="ordner-loeschen">
+        {% if ordner.ordid %}
+          <form action="{% url 'ordner_loeschen' ordner.ordid %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="text-red-600 hover:text-red-800">🗑️ Ordner löschen</button>
+          </form>
+        {% else %}
+          <p class="text-red-600 text-sm">⚠️ Kein Ordner ID vorhanden</p>
+        {% endif %}
       </div>
-    {% endfor %}
-  </div>
+
+    </div>
+  {% endfor %}
+</div>
+
 {% else %}
   <p>Keine Unterordner gefunden.
 {% endif %}

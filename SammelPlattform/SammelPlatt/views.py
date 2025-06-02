@@ -357,4 +357,32 @@ def qr_code_view(request, fotoid):
     response = HttpResponse(content_type="image/png")
     qr.save(response, "PNG")
     return response
+import os
+
+def delete_fotos_and_files(ordner):
+    for foto in ordner.foto_set.all():
+        if foto.foto:
+            filepath = foto.foto.path
+            os.path.isfile(filepath)
+            os.remove(filepath)
+        foto.delete()
+
+def delete_ordner_recursively(ordner):
+    # Alle Unterordner rekursiv löschen
+    for sub_ordner in Ordner.objects.filter(inordner=ordner):
+        delete_ordner_recursively(sub_ordner)
+    # Fotos löschen (inkl. Dateien)
+    delete_fotos_and_files(ordner)
+    # Ordner löschen
+    ordner.delete()
+
+def ordner_loeschen(request, ordnerid):
+    ordner = get_object_or_404(Ordner, pk=ordnerid)
+
+    if request.method == 'POST':
+        # Ordner inkl. Unterordner und Fotos löschen
+        delete_ordner_recursively(ordner)
+        return redirect('galerie')  # Oder wie der Name deiner Galerie-Startseite heißt
+
+    return render(request, 'ordner_bestaetigung.html', {'ordner': ordner})
 
