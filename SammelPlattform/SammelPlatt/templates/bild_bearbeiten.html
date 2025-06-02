@@ -107,6 +107,8 @@
           </div>
 
           <canvas id="canvas" width="800" height="500"></canvas>
+          <input type="hidden" name="bearbeitetes_bild" id="bearbeitetes_bild">
+
         </section>
 
         <div class="flex justify-end">
@@ -119,6 +121,12 @@
 </main>
 
 <script>
+   const form = document.querySelector('form');
+  form.addEventListener('submit', function(event) {
+    const hiddenInput = document.getElementById('bearbeitetes_bild');
+    // Canvas als PNG-Daten-URL speichern
+    hiddenInput.value = canvas.toDataURL('image/png');
+  });
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
 

@@ -104,6 +104,8 @@ def bild_loeschen(request, fotoid):
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Foto
 
+import base64
+from django.core.files.base import ContentFile
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Foto
 
@@ -113,11 +115,22 @@ def bild_bearbeiten(request, fotoid):
     if request.method == 'POST':
         beschreibung = request.POST.get('beschreibung', '')
         neues_foto = request.FILES.get('foto')
+        bearbeitetes_bild = request.POST.get('bearbeitetes_bild')
 
         bild.beschreibung = beschreibung
 
-        if neues_foto:
-            bild.foto.delete()  # optional: altes Bild löschen
+        if bearbeitetes_bild:
+            try:
+                format, imgstr = bearbeitetes_bild.split(';base64,')  # z.B. 'data:image/png;base64,...'
+                ext = format.split('/')[-1]
+                data = ContentFile(base64.b64decode(imgstr), name=f"bearbeitet_{bild.fotoid}.{ext}")
+                bild.foto.delete(save=False)  # altes Bild löschen, aber nicht sofort speichern
+                bild.foto = data
+            except Exception as e:
+                print(f"Fehler beim Verarbeiten des Base64-Bildes: {e}")
+
+        elif neues_foto:
+            bild.foto.delete(save=False)  # optional: altes Bild löschen
             bild.foto = neues_foto
 
         bild.save()
