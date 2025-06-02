@@ -69,8 +69,8 @@ function Rezesionhinzufuegen() {
                 const titel = document.createElement('h3');
                 titel.textContent = data.titel;
 
-                const sterne = document.createElement('p');
-                sterne.textContent = `Sterne: ${data.sterne}`;
+               const sterne = document.createElement('p');
+               sterne.style.display = 'none'; 
 
                 const beschreibung = document.createElement('p');
                 beschreibung.textContent = data.beschreibung;
