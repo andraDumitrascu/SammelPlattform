@@ -9,14 +9,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="{% static 'Reviews.js' %}"></script>
     <link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
-    <script>
-        const csrfToken = '{{ csrf_token }}';  // <- CSRF-Token für sichere POSTs
-    </script>
 </head>
 <body class="light-mode min-h-screen flex flex-col">
+
+    <script>
+        // CSRF-Token im Cookie setzen, damit getCSRFToken() funktioniert
+        document.cookie = "csrftoken={{ csrf_token }}";
+    </script>
+
     <div class="background-pattern"></div>
 
-    <nav class="fixed top-0 w-full py-4 flex justify-center space-x-8 text-lg font-semibold backdrop-blur-md bg-white bg-opacity-10 shadow-lg">
+    <nav class="fixed top-0 w-full py-4 flex justify-center space-x-8 text-lg font-semibold backdrop-blur-md bg-white bg-opacity-10 shadow-lg z-50">
         <a href="{% url 'home' %}" class="hover:text-yellow-300 transition">Home</a>
         <a href="{% url 'home' %}#features" class="hover:text-yellow-300 transition">Features</a>
         <a href="{% url 'home' %}#portfolio" class="hover:text-yellow-300 transition">Portfolio</a>
@@ -25,17 +28,19 @@
         <button onclick="toggleDarkMode()" class="ml-6 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 transition">🌙/☀️</button>
     </nav>
 
-    <form style="display: none">{% csrf_token %}</form>
-
-    <section id="review" class="review-container">
-        <h2 class="review-title">
+    <section id="review" class="review-container mt-24 px-6">
+        <h2 class="review-title text-3xl font-bold mb-6">
             Rezension 
-            <button onclick="Rezesionhinzufuegen()" id="rezensionhinzufuegen">+ Rezension erstellen</button>
+            <button onclick="Rezesionhinzufuegen()" id="rezensionhinzufuegen"
+                class="ml-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition">
+                + Rezension erstellen
+            </button>
         </h2>
-        <div id="rezension">
+
+        <div id="rezension" class="space-y-4">
             {% for rezension in bewertungen %}
-                <div class="review-box">
-                    <h3>{{ rezension.titel }}</h3>
+                <div class="review-box p-4 border rounded shadow bg-white dark:bg-gray-800 dark:text-white">
+                    <h3 class="text-xl font-semibold">{{ rezension.titel }}</h3>
                     <p>Sterne: {{ rezension.sternezahl }}</p>
                     <p>{{ rezension.beschreibung }}</p>
                 </div>
@@ -43,9 +48,9 @@
         </div>
     </section>
 
-    <footer class="footer">
+    <footer class="footer mt-auto py-4 text-center bg-gray-100 dark:bg-gray-900 dark:text-white">
         <p>©2025 Social Solutions. Alle Rechte vorbehalten. 
-            <a href="{% url 'terms' %}">Nutzungsbedingungen</a>.
+            <a href="{% url 'terms' %}" class="text-blue-600 hover:underline">Nutzungsbedingungen</a>.
         </p>
     </footer>
 </body>

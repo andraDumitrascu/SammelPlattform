@@ -62,12 +62,32 @@ def datenschutz(request):
 def terms(request):
     return render(request, 'terms.html')
 
+from django.shortcuts import render
+from .models import Bewertung
+
 def reviews(request):
-    return render(request, 'Reviews.html')
+    bewertungen = Bewertung.objects.all()
+    return render(request, 'Reviews.html', {'bewertungen': bewertungen})
+
 
 def galerie(request):
     ordner = Ordner.objects.filter(inordner=None)
     return render(request, 'Galerie.html', {'ordner': ordner})
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Foto
+
+def foto_detail(request, id):
+    foto = get_object_or_404(Foto, fotoid=id)
+    absolute_image_url = request.build_absolute_uri(foto.foto.url)
+    absolute_page_url = request.build_absolute_uri()
+    return render(request, 'foto_detail.html', {
+        'foto': foto,
+        'absolute_image_url': absolute_image_url,
+        'absolute_page_url': absolute_page_url,
+    })
+
 
 from django.shortcuts import get_object_or_404, render
 from .models import Ordner, Foto
@@ -76,15 +96,17 @@ def ordner_detail(request, slug):
     aktueller_ordner = get_object_or_404(Ordner, slug=slug)
 
     unterordner = Ordner.objects.filter(inordner=aktueller_ordner)
-
     fotos = Foto.objects.filter(ordid=aktueller_ordner)
+
+    # Füge jedem Foto die absolute URL hinzu
+    for foto in fotos:
+        foto.full_url = request.build_absolute_uri(foto.foto.url)
 
     return render(request, 'ordner_detail.html', {
         'aktueller_ordner': aktueller_ordner,
         'unterordner': unterordner,
         'fotos': fotos,
     })
-
 from django.shortcuts import get_object_or_404, redirect
 from .models import Foto  # ggf. anpassen
 
@@ -138,33 +160,39 @@ def bild_bearbeiten(request, fotoid):
 
     return render(request, 'bild_bearbeiten.html', {'bild': bild})
 
-def rezensionen_anzeigen(request):
-    bewertungen = Bewertung.objects.all()
-    return render(request, 'Reviews.html', {'bewertungen': bewertungen}) 
-
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.shortcuts import render
 import json
 from .models import Bewertung, Nutzer, Foto
+
+
+def rezensionen_anzeigen(request):
+    bewertungen = Bewertung.objects.all()
+    return render(request, 'Reviews.html', {'bewertungen': bewertungen})
+
 
 @csrf_exempt
 def bewertung_erstellen(request):
     if request.method == 'POST':
-        daten = json.loads(request.body)
+        try:
+            daten = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Ungültiges JSON'}, status=400)
+
         titel = daten.get('titel')
         beschreibung = daten.get('text')
         sterne = daten.get('sterne')
 
-        # Beispielhafte Zuordnung: Nutzer per ID holen (hier 1), Foto optional holen
-        try:
-            nutzer = Nutzer.objects.get(pk=1)
-        except Nutzer.DoesNotExist:
-            return JsonResponse({'error': 'Nutzer nicht gefunden'}, status=404)
+        # Einen beliebigen Nutzer holen, falls kein Login vorhanden ist
+        nutzer = Nutzer.objects.first()
+        if not nutzer:
+            return JsonResponse({'error': 'Kein Nutzer vorhanden'}, status=404)
 
-        try:
-            foto = Foto.objects.get(pk=1)
-        except Foto.DoesNotExist:
-            foto = None  # Optional: kein Foto vorhanden
+        # Optionales Foto (z.B. das erste nehmen, wenn vorhanden)
+        foto = Foto.objects.first()
+        if not foto:
+            return JsonResponse({'error': 'Kein Foto vorhanden'}, status=404)
 
         bewertung = Bewertung(
             titel=titel,

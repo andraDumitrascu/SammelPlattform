@@ -44,7 +44,7 @@ function Rezesionhinzufuegen() {
                     },
                     body: JSON.stringify({
                         titel: "Neue Bewertung",
-                        text: rezensionText,
+                        beschreibung: rezensionText,
                         sterne: 5
                     })
                 });
@@ -59,18 +59,22 @@ function Rezesionhinzufuegen() {
 
                 const data = await response.json();
 
+                // Neue Rezensionselemente erstellen
                 const neuerOrdner = document.createElement('div');
-                neuerOrdner.className = 'rezension-text';
+                neuerOrdner.className = 'review-box';
 
-                // Falls backend kein 'benutzer' zurückgibt, kannst du diesen Teil anpassen
-                textContent = `Titel: ${data.titel} (${data.sterne} Sterne)`;
-                if (data.benutzer) {
-                    textContent += ` von ${data.benutzer}`;
-                }
+                const titel = document.createElement('h3');
+                titel.textContent = data.titel;
 
-                const text = document.createElement('p');
-                text.textContent = textContent;
-                neuerOrdner.appendChild(text);
+                const sterne = document.createElement('p');
+                sterne.textContent = `Sterne: ${data.sterne}`;
+
+                const beschreibung = document.createElement('p');
+                beschreibung.textContent = data.beschreibung;
+
+                neuerOrdner.appendChild(titel);
+                neuerOrdner.appendChild(sterne);
+                neuerOrdner.appendChild(beschreibung);
 
                 document.getElementById('rezension').appendChild(neuerOrdner);
 

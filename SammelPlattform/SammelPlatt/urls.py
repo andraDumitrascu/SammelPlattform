@@ -20,6 +20,8 @@ urlpatterns = [
     path('bild/<int:fotoid>/loeschen/', views.bild_loeschen, name='bild_loeschen'),
     path('bild/<int:fotoid>/bearbeiten/', views.bild_bearbeiten, name='bild_bearbeiten'),
     path('qr-code/<int:fotoid>/', views.qr_code_view, name='qr_code_view'),
+    path('foto/<int:pk>/', views.foto_detail, name='foto_detail'),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
