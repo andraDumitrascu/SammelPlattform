@@ -78,6 +78,11 @@ class Foto(models.Model):
     gesamtbewertung = models.FloatField(db_column='Gesamtbewertung')
     ordid = models.ForeignKey('Ordner', models.DO_NOTHING, db_column='OrdID')
     foto = models.ImageField(upload_to='uploads/')
+    def is_image(self):
+        return self.foto.url.lower().endswith(('.jpg', '.jpeg', '.png', '.webp'))
+
+    def is_video(self):
+        return self.foto.url.lower().endswith(('.mp4', '.mov', '.avi'))
 
     class Meta:
         db_table = 'foto'

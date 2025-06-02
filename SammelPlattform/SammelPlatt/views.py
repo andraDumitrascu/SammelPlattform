@@ -357,3 +357,4 @@ def qr_code_view(request, fotoid):
     response = HttpResponse(content_type="image/png")
     qr.save(response, "PNG")
     return response
+
