@@ -71,33 +71,50 @@
     </div>
 {% endif %}
 
-
-        <!-- Bilderanzeige -->
-       <div class="flex flex-wrap gap-4">
+<!-- Bilder- und Videoanzeige -->
+<div class="flex flex-wrap gap-4">
   {% for bild in fotos %}
-        <div class="relative group image-container max-w-xs">
-      <img src="{{ bild.foto.url }}" alt="{{ bild.beschreibung }}" class="rounded-lg shadow-lg cursor-pointer">
+    <div class="relative group image-container max-w-xs">
+      
+      <!-- Datei-Anzeige (Bild/Video/sonstiges) -->
+      {% if bild.is_image %}
+        <img src="{{ bild.foto.url }}" alt="{{ bild.beschreibung }}" class="rounded-lg shadow-lg cursor-pointer">
+      {% elif bild.is_video %}
+        <video width="320" height="240" controls class="rounded-lg shadow-lg">
+          <source src="{{ bild.foto.url }}">
+          Dein Browser unterstützt das Video-Tag nicht.
+        </video>
+      {% else %}
+        <div class="rounded-lg shadow-lg bg-gray-100 p-4 text-center">
+          <p class="text-sm text-gray-700">Unbekannter Dateityp</p>
+          <a href="{{ bild.foto.url }}" download class="text-blue-600 underline">Download</a>
+        </div>
+      {% endif %}
+
+      <!-- Hover-Menü -->
       <div class="hidden group-hover:flex flex-col absolute top-2 right-2 bg-white border border-gray-200 rounded shadow-md z-10">
         <a href="{{ bild.foto.url }}" download class="px-4 py-2 text-sm hover:bg-gray-100" style="color:black;">⬇️ Herunterladen</a>
+        
         <form action="{% url 'bild_loeschen' bild.fotoid %}" method="post">
           {% csrf_token %}
-        <button type="submit" class="px-4 py-2 text-sm hover:bg-red-100 text-red-600" style="color:black;">🗑️ Löschen</button>
+          <button type="submit" class="px-4 py-2 text-sm hover:bg-red-100 text-red-600" style="color:black;">🗑️ Löschen</button>
         </form>
+        
         <a href="{% url 'bild_bearbeiten' bild.fotoid %}" class="px-4 py-2 text-sm hover:bg-gray-100" style="color:black;">✏️ Bearbeiten</a>
-        <a href="{% url 'qr_code_view' bild.fotoid %}" target="_blank" class="px-4 py-2 text-sm hover:bg-gray-100" style="color:black;">
-📸 Instagram (QR)</a>
+        
+        <a href="{% url 'qr_code_view' bild.fotoid %}" target="_blank" class="px-4 py-2 text-sm hover:bg-gray-100" style="color:black;">📸 Instagram (QR)</a>
 
-<a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|slice:":-1" }}galerie/foto/{{ bild.fotoid }}/"
-     target="_blank"
-     class="px-4 py-2 text-sm hover:bg-gray-100"
-     style="color:black;">
-    📘 Facebook
-  </a>
-
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|slice:":-1" }}galerie/foto/{{ bild.fotoid }}/"
+           target="_blank"
+           class="px-4 py-2 text-sm hover:bg-gray-100"
+           style="color:black;">
+          📘 Facebook
+        </a>
       </div>
     </div>
   {% endfor %}
 </div>
+
 
     <footer class="footer">
         <p>©2025 Social Solutions. Alle Rechte vorbehalten. 
