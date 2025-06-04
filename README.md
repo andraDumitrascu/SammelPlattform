@@ -1,7 +1,7 @@
 # Social Solutions
 
 ## Überblick
-Social Solutions ist eine Plattform zur effizienten Verwaltung von Fotos für schulische Social-Media-Kanäle. Lehrer, Klassensprecher und andere berechtigte Nutzer können Bilder hochladen, bearbeiten, speichern, organisieren und direkt auf Plattformen wie Instagram, X und Facebook posten. Die Plattform sorgt für eine geordnete Ablage nach Klassen, Abteilungen oder Themen und bietet eine verschlüsselte Speicherung der Daten.
+Social Solutions ist eine Plattform zur effizienten Verwaltung von Fotos für schulische Social-Media-Kanäle. Lehrer, Klassensprecher und andere berechtigte Nutzer können Bilder hochladen, bearbeiten, speichern, organisieren und direkt auf Plattformen wie Instagram posten. Die Plattform sorgt für eine geordnete Ablage nach Klassen, Abteilungen oder Themen und bietet eine verschlüsselte Speicherung der Daten.
 
 ## Funktionen
 - **Zentrale Sammlung** aller Schul-Social-Media-Fotos
@@ -25,8 +25,8 @@ Folge diesen Schritten, um das Projekt lokal einzurichten:
 
 ### 1. Repository klonen
 ```sh
-git clone https://github.com/dein-repo/social-solutions.git
-cd social-solutions
+git clone https://github.com/andraDumitrascu/SammelPlattform.git
+cd SammelPlattform
 ```
 
 ### 2. Umgebung konfigurieren
@@ -88,9 +88,10 @@ Wir behalten uns das Recht vor, diese Bedingungen jederzeit zu ändern. Änderun
 Diese Bedingungen unterliegen den Gesetzen von Österreich.
 
 ### 8. Kontakt
-Bei Fragen zu den Nutzungsbedingungen kontaktiere uns unter: <muss noch festgelegt werden>
+Bei Fragen zu den Nutzungsbedingungen kontaktiere uns unter: kitutorai@gmail.com
 
 
-# Genauere Details unter:
-https://www.canva.com/design/DAGivXNQS8Q/uW9flFVHPAYnVDucnJlNIQ/
-https://trello.com/b/VGpcwxyC/sammelplattform
+# Weiterführende Inhalte:
+**Design mit Canva:** https://www.canva.com/design/DAGivXNQS8Q/uW9flFVHPAYnVDucnJlNIQ/
+**Organisation mit Trello:** https://trello.com/b/VGpcwxyC/sammelplattform
+**Präsentation mit Pitch:** https://app.pitch.com/app/presentation/1ac7fef8-a803-4f74-9a93-177a70472b15/12e9a8bb-5cb7-41c6-b141-685e03e8754c
