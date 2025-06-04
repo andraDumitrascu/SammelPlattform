@@ -184,15 +184,12 @@ def bewertung_erstellen(request):
         beschreibung = daten.get('text')
         sterne = daten.get('sterne')
 
-        try:
-            sternezahl = int(sterne)
-        except (TypeError, ValueError):
-            return JsonResponse({'error': 'Ungültiger Sternewert'}, status=400)
-
+        # Nutzer holen (oder anpassen mit User-Login)
         nutzer = Nutzer.objects.first()
         if not nutzer:
             return JsonResponse({'error': 'Kein Nutzer vorhanden'}, status=404)
 
+        # Foto holen (optional, z.B. erstes Foto)
         foto = Foto.objects.first()
         if not foto:
             return JsonResponse({'error': 'Kein Foto vorhanden'}, status=404)
@@ -200,7 +197,7 @@ def bewertung_erstellen(request):
         bewertung = Bewertung(
             titel=titel,
             beschreibung=beschreibung,
-            sternezahl=sternezahl,
+            sternezahl=sterne,
             nutzerid=nutzer,
             fotoid=foto
         )
@@ -213,8 +210,6 @@ def bewertung_erstellen(request):
         })
 
     return JsonResponse({'error': 'Nur POST erlaubt'}, status=400)
-
-
 @csrf_exempt
 def ordner_erstellen(request):
     if request.method == 'POST':

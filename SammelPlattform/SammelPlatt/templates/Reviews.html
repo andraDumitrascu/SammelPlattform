@@ -40,7 +40,7 @@
         <div id="rezension" class="space-y-4">
             {% for rezension in bewertungen %}
                 <div class="review-box p-4 border rounded shadow bg-white dark:bg-gray-800 dark:text-white"
-                     data-sterne="{{ rezension.sterne }}">
+                     data-sterne="{{ rezension.sternezahl }}">
                     <h3 class="text-xl font-semibold">{{ rezension.titel }}</h3>
                     <div class="sterne"></div>
                     <p>{{ rezension.beschreibung }}</p>
@@ -54,5 +54,8 @@
             <a href="{% url 'terms' %}" class="text-blue-600 hover:underline">Nutzungsbedingungen</a>.
         </p>
     </footer>
+
+
+
 </body>
 </html>
