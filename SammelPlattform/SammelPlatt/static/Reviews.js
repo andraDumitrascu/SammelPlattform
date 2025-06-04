@@ -80,7 +80,7 @@
                             "X-CSRFToken": getCSRFToken()
                         },
                         body: JSON.stringify({
-                            titel: rezensionText,
+                            titel: "Bewertung:",
                             text: rezensionText,
                             sterne: sterneWert
                         })
