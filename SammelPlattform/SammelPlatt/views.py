@@ -184,12 +184,15 @@ def bewertung_erstellen(request):
         beschreibung = daten.get('text')
         sterne = daten.get('sterne')
 
-        # Einen beliebigen Nutzer holen, falls kein Login vorhanden ist
+        try:
+            sternezahl = int(sterne)
+        except (TypeError, ValueError):
+            return JsonResponse({'error': 'Ungültiger Sternewert'}, status=400)
+
         nutzer = Nutzer.objects.first()
         if not nutzer:
             return JsonResponse({'error': 'Kein Nutzer vorhanden'}, status=404)
 
-        # Optionales Foto (z.B. das erste nehmen, wenn vorhanden)
         foto = Foto.objects.first()
         if not foto:
             return JsonResponse({'error': 'Kein Foto vorhanden'}, status=404)
@@ -197,7 +200,7 @@ def bewertung_erstellen(request):
         bewertung = Bewertung(
             titel=titel,
             beschreibung=beschreibung,
-            sternezahl=sterne,
+            sternezahl=sternezahl,
             nutzerid=nutzer,
             fotoid=foto
         )
